@@ -1,28 +1,16 @@
 package com.ESPOTIPHAI_MIUSIC.sistema.contenido;
 import java.util.*;
 
-public class Lista extends Contenido{
-	
-	private ArrayList<Contenido> contenido = new ArrayList<Contenido>();
-	
-	public Lista() {
-		
-	}
+public class Album extends Contenido {
+	private ArrayList<Cancion> contenido = new ArrayList<Cancion>();
 
-
-	/**
-	 * @return the contenido
-	 */
-	public ArrayList<Contenido> getContenido() {
-		return contenido;
-	}
 	
-
+	
 	public Status calcularTiempo() {
 		return Status.OK;
 	}
 	
-	public Status añadirContenido(Contenido contenido) {
+	public Status añadirContenido(Cancion contenido) {
 		if (this.contenido.add(contenido)) {
 			return Status.OK;
 		} else {
@@ -33,6 +21,4 @@ public class Lista extends Contenido{
 	public Status eliminarContenido() {
 		return Status.OK;
 	}
-
-
 }
