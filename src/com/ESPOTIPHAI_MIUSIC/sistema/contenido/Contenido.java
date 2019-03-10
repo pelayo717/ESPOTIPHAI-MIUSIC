@@ -4,7 +4,7 @@ import java.util.*;
 
 public abstract class Contenido  {
 	
-	private Date Año;
+	private Date Anyo;
 	private String titulo;
 	private Integer duracion;
 	private Integer id;
@@ -12,18 +12,18 @@ public abstract class Contenido  {
 	
 	
 	/**
-	 * @return the año
+	 * @return the anyo
 	 */
-	public Date getAño() {
-		return Año;
+	public Date getAnyo() {
+		return Anyo;
 	}
 	
 	
 	/**
-	 * @param año the año to set
+	 * @param anyo the anyo to set
 	 */
-	public void setAño(Date año) {
-		Año = año;
+	public void setAnyo(Date anyo) {
+		Anyo = anyo;
 	}
 
 

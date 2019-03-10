@@ -10,7 +10,7 @@ public class Album extends Contenido {
 		return Status.OK;
 	}
 	
-	public Status añadirContenido(Cancion contenido) {
+	public Status anyadirContenido(Cancion contenido) {
 		if (this.contenido.add(contenido)) {
 			return Status.OK;
 		} else {

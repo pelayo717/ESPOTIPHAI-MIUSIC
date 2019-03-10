@@ -22,7 +22,7 @@ public class Lista extends Contenido{
 		return Status.OK;
 	}
 	
-	public Status añadirContenido(Contenido contenido) {
+	public Status anyadirContenido(Contenido contenido) {
 		if (this.contenido.add(contenido)) {
 			return Status.OK;
 		} else {
