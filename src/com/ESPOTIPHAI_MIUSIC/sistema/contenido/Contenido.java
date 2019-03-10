@@ -2,12 +2,15 @@ package com.ESPOTIPHAI_MIUSIC.sistema.contenido;
 
 import java.util.*;
 
+import com.ESPOTIPHAI_MUSIC.sistema.usuario.Usuario;
+
 public abstract class Contenido  {
 	
 	private Date Anyo;
 	private String titulo;
 	private Integer duracion;
 	private Integer id;
+	private Usuario autor;
 	
 	
 	

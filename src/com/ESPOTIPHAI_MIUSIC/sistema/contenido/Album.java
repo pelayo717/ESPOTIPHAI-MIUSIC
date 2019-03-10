@@ -1,6 +1,8 @@
 package com.ESPOTIPHAI_MIUSIC.sistema.contenido;
 import java.util.*;
 
+import com.ESPOTIPHAI_MIUSIC.sistema.status.Status;
+
 public class Album extends Contenido {
 	private ArrayList<Cancion> contenido = new ArrayList<Cancion>();
 
