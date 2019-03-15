@@ -119,10 +119,14 @@ public class Usuario {
 		if(bool == true) { /*Seguimos al usuario*/
 			if(seguidores.get(id) == NULL) {
 				seguidores.add(id);
+				return Status.OK;
+			}else {
+				System.out.println("No se puede seguir al usuario porque ya le sigue\n");
 			}
 		} else  {  /*Dejamos de seguir al usuario*/ 
 			if(seguidores.get(id) != NULL) {
-				seguidores.remove(id);			
+				seguidores.remove(id);	
+				return Status.OK;
 			}else {
 				System.out.println("No se puede dejar de seguir al usuario porque no le sigue\n");
 			}
@@ -134,8 +138,15 @@ public class Usuario {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		Boolean b = true;
+		Status x = Status.ERROR; 
+		ArrayList<Integer> seguidores = new ArrayList<Integer>
+		
+		for (int i=1; i<=10; i++){
+			seguidores.add(i); 
+		}
+		x = seguirUsuario(7, b);
+		
 	}
 
 }
