@@ -4,6 +4,9 @@ import java.util.*;
 
 import com.ESPOTIPHAI_MUSIC.sistema.usuario.Usuario;
 
+/**
+ *	Clase Contenido
+ */
 public abstract class Contenido  {
 	
 	private Date Anyo;
@@ -15,7 +18,8 @@ public abstract class Contenido  {
 	
 	
 	/**
-	 * @return the anyo
+	 *	Getter de anyo
+	 * 	@return  anyo de el contenido (Date)
 	 */
 	public Date getAnyo() {
 		return Anyo;
@@ -23,7 +27,8 @@ public abstract class Contenido  {
 	
 	
 	/**
-	 * @param anyo the anyo to set
+	 *	Setter de anyo
+	 *	@param anyo (Date) anyo del contenido
 	 */
 	public void setAnyo(Date anyo) {
 		Anyo = anyo;
@@ -31,7 +36,8 @@ public abstract class Contenido  {
 
 
 	/**
-	 * @return the titulo
+	 *	Getter de titullo
+	 * 	@return  titulo del Contenido (String)
 	 */
 	public String getTitulo() {
 		return titulo;
@@ -39,7 +45,8 @@ public abstract class Contenido  {
 
 
 	/**
-	 * @param titulo the titulo to set
+	 *	Setter del titulo
+	 *	@param titulo del contenido (String)
 	 */
 	public void setTitulo(String titulo) {
 		this.titulo = titulo;
@@ -47,7 +54,8 @@ public abstract class Contenido  {
 
 
 	/**
-	 * @return the duracion
+	 *	Getter de duracion
+	 * 	@return duracion del Contenido (Integer)
 	 */
 	public Integer getDuracion() {
 		return duracion;
@@ -55,7 +63,8 @@ public abstract class Contenido  {
 
 
 	/**
-	 * @param duracion the duracion to set
+	 *	Setter de duraccion
+	 *	@param duracion del contenido (Integer)
 	 */
 	public void setDuracion(Integer duracion) {
 		this.duracion = duracion;
@@ -63,7 +72,8 @@ public abstract class Contenido  {
 
 
 	/**
-	 * @return the id
+	 *	Getter de id
+	 * 	@return  id del Contenido (Integer)
 	 */
 	public Integer getId() {
 		return id;
@@ -71,7 +81,8 @@ public abstract class Contenido  {
 
 
 	/**
-	 * @param id the id to set
+	 *	Setter de Id
+	 *	@param id del contenido (Integer)
 	 */
 	public void setId(Integer id) {
 		this.id = id;
