@@ -116,12 +116,17 @@ public class Usuario {
 	
 	
 	public Status seguiUsuario(Integer id, Boolean bool) {
-		for(Integer c : seguidores) {
-			if(c == id) {
-				return Status.ERROR;
+		if(bool == true) { /*Seguimos al usuario*/
+			if(seguidores.get(id) == NULL) {
+				seguidores.add(id);
+			}
+		} else  {  /*Dejamos de seguir al usuario*/ 
+			if(seguidores.get(id) != NULL) {
+				seguidores.remove(id);			
+			}else {
+				System.out.println("No se puede dejar de seguir al usuario porque no le sigue\n");
 			}
 		}
-		
 		return Status.OK;
 	}
 	
