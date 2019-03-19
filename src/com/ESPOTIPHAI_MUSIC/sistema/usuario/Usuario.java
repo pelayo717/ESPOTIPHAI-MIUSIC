@@ -115,20 +115,22 @@ public class Usuario {
 	}
 	
 	
-	public Status seguiUsuario(Integer id, Boolean bool) {
+	public Boolean seguiUsuario(Integer id, Boolean bool) { //La funcion es status 
 		if(bool == true) { /*Seguimos al usuario*/
 			if(seguidores.get(id) == NULL) {
 				seguidores.add(id);
-				return Status.OK;
+				return true;  //Status.OK
 			}else {
 				System.out.println("No se puede seguir al usuario porque ya le sigue\n");
+				return false;
 			}
 		} else  {  /*Dejamos de seguir al usuario*/ 
 			if(seguidores.get(id) != NULL) {
 				seguidores.remove(id);	
-				return Status.OK;
+				return true; //Status.OK
 			}else {
 				System.out.println("No se puede dejar de seguir al usuario porque no le sigue\n");
+				return false;
 			}
 		}
 		return Status.OK;
@@ -146,7 +148,9 @@ public class Usuario {
 			seguidores.add(i); 
 		}
 		x = seguirUsuario(7, b);
-		
+		if(x == ok) {
+				System.out.println("Se ha seguido al usuario correctamente\n");
+		}
 	}
 
 }
