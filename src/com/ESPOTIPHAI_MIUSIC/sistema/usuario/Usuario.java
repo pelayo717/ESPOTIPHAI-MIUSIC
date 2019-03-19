@@ -1,175 +1,132 @@
-package com.ESPOTIPHAI_MIUSIC.sistema.usuario;
+package SPOTI;
+
 /**
  * 
  */
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Stack;
 
-import com.ESPOTIPHAI_MIUSIC.sistema.status.Status;
 
 import java.util.ArrayList;
 
 /**
- * Clase Usuario
+ * @author eps
+ *
  */
 public class Usuario {
 	private String nombre_usuario;
 	private String nombre_autor;
-	private Date fecha_nacimiento;
-	private Date fecha_registro;
+	private String fecha_nacimiento;
+	private LocalDate fecha_registro;
 	private String contrasena;
-	private Date fecha_inicio_pro;
+	private LocalDate fecha_inicio_pro;
 	private Boolean premium;
-	private Date fecha_fin_pro;
+	private Integer numero_repro;
 	private Integer id;
 	private ArrayList<Integer> seguidores;
+	//private ArrayList<Lista> listas;
+	
 	
 	/**
 	 * Constructor de la clase usuario
 	 */
-	public Usuario(String nombre_usuario, String nombre_autor, Date fecha_nacimiento, Date fecha_registro, String contrasena, Date fecha_inicio_pro, Boolean premium, Date fecha_fin_pro, Integer id, ArrayList<Integer> seguidores) {
+	public Usuario(String nombre_usuario, String nombre_autor, String fecha_nacimiento, String contrasena, Integer id) {
 		this.nombre_usuario = nombre_usuario;
 		this.nombre_autor = nombre_autor;
 		this.fecha_nacimiento = fecha_nacimiento;
-		this.fecha_registro = fecha_registro;
+		this.fecha_registro = LocalDate.now();
 		this.contrasena = contrasena;
-		this.fecha_inicio_pro = fecha_inicio_pro;
-		this.premium = premium;
-		this.fecha_fin_pro = fecha_fin_pro;
+		this.fecha_inicio_pro = null;
+		this.premium = false;
 		this.id = id;
-		this.seguidores = seguidores;
+		this.seguidores = new ArrayList<Integer>();
+		//this.listas = new ArrayList<Listas>();
 	}
 	
-	/**
-	 *	Getter del nombre del usuario
-	 * @return    el nombre del usuario (String)
-	 */
+	
 	public String getNombre_usuario() {
 		return nombre_usuario;
 	}
 	
-	/**
-	 *	Getter del nombre del usuario
-	 * @return    el nombre del usuario (String)
-	 */
 	public String getNombre_autor() {
 		return nombre_autor;
 	}
 	
-	/**
-	 *	Getter del nombre del usuario
-	 * @return    el nombre del usuario (String)
-	 */
-	public Date getFecha_nacimiento() {
+	public LocalDate getFecha_nacimiento() {
 		return fecha_nacimiento;
 	}
 	
-	/**
-	 *	Getter del nombre del usuario
-	 * @return    el nombre del usuario (String)
-	 */
-	public Date getFecha_registro() {
+	public LocalDate getFecha_registro() {
 		return fecha_registro;
 	}
 	
-	/**
-	 *	Getter del nombre del usuario
-	 * @return    el nombre del usuario (String)
-	 */
 	public String getContrasena() {
 		return contrasena;
 	}
 	
-	/**
-	 *	Getter del nombre del usuario
-	 * @return    el nombre del usuario (String)
-	 */
-	public Date getFecha_inicio_pro() {
+	public LocalDate getFecha_inicio_pro() {
 		return fecha_inicio_pro;
 	}
 	
-	/**
-	 *	Getter del nombre del usuario
-	 * @return    el nombre del usuario (String)
-	 */
 	public Boolean getPremium() {
 		return premium;
 	}
 	
-	/**
-	 *	Getter del nombre del usuario
-	 * @return    el nombre del usuario (String)
-	 */
-	public Date getFecha_fin_pro() {
-		return fecha_fin_pro;
-	}
-	
-	/**
-	 *	Getter del nombre del usuario
-	 * @return    el nombre del usuario (String)
-	 */
 	public Integer getId() {
 		return id;
 	}
 	
-	public void setNombre_usuario(String nombre) {
-		this.nombre_usuario = nombre;
-	}
 	
-	public void setNombre_autor(String nombre) {
-		this.nombre_autor = nombre;
-	}
-	
-	public void setFecha_nacimiento(Date fecha) {
-		this.fecha_nacimiento = fecha;
-	}
-	
-	public void setFecha_registro(Date fecha) {
-		this.fecha_registro = fecha;
-	}
-	
-	public void setcontrasena(String contrasena) {
-		this.contrasena = contrasena;
-	}
+	public Boolean seguirUsuario(Integer id, Boolean bool) { //La funcion es status 
 
-	public void setFecha_inicio_pro(Date fecha) {
-		this.fecha_inicio_pro = fecha;
-	}
-	
-	public void setPremium(Boolean premium) {
-		this.premium = premium;
-	}
-	
-	public void setFecha_fin_pro(Date fecha) {
-		this.fecha_fin_pro = fecha;
-	}
-	
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	
-	public Status seguiUsuario(Integer id, Boolean bool) {
 		if(bool == true) { /*Seguimos al usuario*/
-			if(seguidores.get(id) == null) {
+			if(seguidores.indexOf(id) == -1) {
 				seguidores.add(id);
+				System.out.println("Se ha seguido al usuario correctamente");
+				return true;  //Status.OK
+			}else {
+				System.out.println("No se puede seguir al usuario porque ya le sigue\n");
+				return false;
 			}
 		} else  {  /*Dejamos de seguir al usuario*/ 
-			if(seguidores.get(id) != null) {
-				seguidores.remove(id);			
+			if(seguidores.indexOf(id) != -1) {
+				seguidores.remove(seguidores.indexOf(id));
+				System.out.println("Se ha dejado de seguir al usuario correctamente\n");
+				return true; //Status.OK
 			}else {
 				System.out.println("No se puede dejar de seguir al usuario porque no le sigue\n");
+				return false;
 			}
 		}
-		return Status.OK;
+		//Status.OK
 	}
+	public Boolean mejorarCuentaPorReproducciones() {
+		
+		fecha_inicio_pro = LocalDate.now();
+		premium = true;
+		//cambiar fechafinal pro
+		return false;
+	}
+	public Boolean emperorarCuenta() {
+		premium = false;
+		fecha_inicio_pro = null;
+		return false;
+	}
+	
+	
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		Boolean b = true;
+		Boolean x = true; 
+		ArrayList<Integer> seguidores = new ArrayList<Integer>();
+		//Usuario n = new Usuario("javier", "rafa", LocalDate.now(), LocalDate.now(), "hola", LocalDate.now(), false, LocalDate.now(), 5, seguidores);
 
+		for (int i=1; i<=10; i++){
+			seguidores.add(i); 
+		}
+		x = n.seguirUsuario(11, b);
 	}
-
 }
