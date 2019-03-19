@@ -63,6 +63,11 @@ public class Cancion {
 		return Status.OK;
 	}
 
+	
+	
+	//GETTERS Y SETTERS
+	
+	
 	/**
 	 * Getter de estado
 	 * @return the estado

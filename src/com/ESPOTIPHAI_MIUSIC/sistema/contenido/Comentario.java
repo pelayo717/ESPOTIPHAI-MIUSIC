@@ -15,7 +15,53 @@ public class Comentario {
 	 * 	@return  OK si no hay errores y ERROR de lo contrario
 	 */
 	public Comentario(Date fecha,String texto) {
+		this.setFecha(fecha);
+		this.setTexto(texto);
+	}
+	
+	
+
+	
+	
+	//GETTERS Y SETTERS
+	
+	
+	
+	/**
+	 * Getter de fecha
+	 * @return the fecha
+	 */
+	public Date getFecha() {
+		return fecha;
+	}
+
+	/**
+	 * Setter de fecha
+	 * @param fecha del comentario
+	 */
+	public void setFecha(Date fecha) {
 		this.fecha = fecha;
+	}
+
+
+	/**
+	 * Getter de texto
+	 * @return the texto
+	 */
+	public String getTexto() {
+		return texto;
+	}
+
+
+	/**
+	 * Setter de texto
+	 * @param texto del comentario
+	 */
+	public void setTexto(String texto) {
 		this.texto = texto;
 	}
+	
+
+	
+	
 }

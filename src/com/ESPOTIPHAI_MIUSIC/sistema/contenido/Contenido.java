@@ -2,7 +2,7 @@ package com.ESPOTIPHAI_MIUSIC.sistema.contenido;
 
 import java.util.*;
 
-import com.ESPOTIPHAI_MUSIC.sistema.usuario.Usuario;
+import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
 
 /**
  *	Clase Contenido
@@ -14,6 +14,16 @@ public abstract class Contenido  {
 	private Integer duracion;
 	private Integer id;
 	private Usuario autor;
+	
+	
+	
+	
+	
+
+	
+	
+	//GETTERS Y SETTERS
+	
 	
 	
 	

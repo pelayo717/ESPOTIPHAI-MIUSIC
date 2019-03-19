@@ -15,14 +15,6 @@ public class Lista extends Contenido{
 	}
 
 
-	/**
-	 *	Getter de contenido de la lista
-	 * 	@return  un ArrayList del contenido de la lista
-	 */
-	public ArrayList<Contenido> getContenido() {
-		return contenido;
-	}
-	
 
 	/**
 	 *	Funcion para calcular el tiempo que dura la lista
@@ -53,5 +45,23 @@ public class Lista extends Contenido{
 		return Status.OK;
 	}
 
+	
+	
+	
+
+	
+	
+	//GETTERS Y SETTERS
+	
+	
+
+	/**
+	 *	Getter de contenido de la lista
+	 * 	@return  un ArrayList del contenido de la lista
+	 */
+	public ArrayList<Contenido> getContenido() {
+		return contenido;
+	}
+	
 
 }
