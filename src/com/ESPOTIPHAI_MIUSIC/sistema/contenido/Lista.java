@@ -2,6 +2,7 @@ package com.ESPOTIPHAI_MIUSIC.sistema.contenido;
 import java.util.*;
 
 import com.ESPOTIPHAI_MIUSIC.sistema.status.Status;
+import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
 
 /**
  *	Clase Lista con herencia de Contenido
@@ -10,8 +11,9 @@ public class Lista extends Contenido{
 	
 	private ArrayList<Contenido> contenido = new ArrayList<Contenido>();
 	
-	public Lista() {
-		
+	public Lista(Date anyo, String titulo, Integer duracion,  Integer id, Usuario autor, ArrayList<Contenido> contenido) {
+		super(anyo, titulo, duracion, id, autor);
+		this.setContenido(contenido);
 	}
 
 
@@ -52,7 +54,17 @@ public class Lista extends Contenido{
 	
 	
 	//GETTERS Y SETTERS
-	
+	/**
+	 *	Setter de contenido de la lista
+	 * 	@param  contenido ArrayList del contenido de la lista
+	 */
+	public void setContenido(ArrayList<Contenido> contenido) {
+		if (contenido == null) {
+			this.contenido = new ArrayList<Contenido>();
+		} else {
+			this.contenido = contenido;
+		}
+	}
 	
 
 	/**

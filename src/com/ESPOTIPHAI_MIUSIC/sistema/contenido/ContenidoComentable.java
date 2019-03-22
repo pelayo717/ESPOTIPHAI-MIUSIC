@@ -3,12 +3,19 @@ import java.util.*;
 
 import javax.net.ssl.SSLEngineResult.Status;
 
+import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
+
 /**
  *	Clase ContenidoComentable con herencia de Contenido
  */
 public abstract class ContenidoComentable extends Contenido {
 	private ArrayList<Comentario> comentarios = new ArrayList<Comentario>();
 	
+	
+	public ContenidoComentable (Date anyo, String titulo, Integer duracion,  Integer id, Usuario autor, ArrayList<Comentario> comentarios) {
+		super(anyo, titulo, duracion, id, autor);
+		this.setComentarios(comentarios);
+	}
 	
 	/**
 	 *	Funcion para añadir un comentario al contenido comentable
@@ -27,6 +34,35 @@ public abstract class ContenidoComentable extends Contenido {
 	public ArrayList<Comentario> getComentarios() {
 		return comentarios;
 	}
+	
+	
+	
+
+	//GETTERS Y SETTERS
+	
+	
+	
+	/**
+	 * Getter de coemntarios
+	 * @return comentarios
+	 */
+	public ArrayList<Comentario> getComentarios(ArrayList<Comentario> comentarios) {
+		return comentarios;
+	}
+
+	/**
+	 * Setter de fecha
+	 * @param fecha del comentario
+	 */
+	public void setComentarios(ArrayList<Comentario> comentarios) {
+		if (comentarios == null){
+			this.comentarios = new ArrayList<Comentario>();
+
+		} else {
+			this.comentarios = comentarios;
+		}
+	}
+	
 
 
 }

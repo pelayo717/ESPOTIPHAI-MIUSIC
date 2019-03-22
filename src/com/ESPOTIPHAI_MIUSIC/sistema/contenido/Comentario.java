@@ -12,7 +12,6 @@ public class Comentario {
 	 *	Constructor de Comentario
 	 *	@param fecha  fecha del comentario (Date)
 	 *	@param texto  texto del comentario (String)
-	 * 	@return  OK si no hay errores y ERROR de lo contrario
 	 */
 	public Comentario(Date fecha,String texto) {
 		this.setFecha(fecha);

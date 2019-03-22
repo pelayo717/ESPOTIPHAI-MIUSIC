@@ -9,13 +9,24 @@ import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
  */
 public abstract class Contenido  {
 	
-	private Date Anyo;
+	private Date anyo;
 	private String titulo;
 	private Integer duracion;
 	private Integer id;
 	private Usuario autor;
 	
-	
+	/**
+	 *	Constructor de Contenido
+	 *	@param estado  estado de la cancion
+	 *	@param reproducible  si la cacion es o no reproducible
+	 */
+	public Contenido(Date anyo, String titulo, Integer duracion,  Integer id, Usuario autor ) {
+		this.setAutor(autor);
+		this.setAnyo(anyo);
+		this.setDuracion(duracion);
+		this.setId(id);
+		this.setTitulo(titulo);
+	}
 	
 	
 	
@@ -32,7 +43,7 @@ public abstract class Contenido  {
 	 * 	@return  anyo de el contenido (Date)
 	 */
 	public Date getAnyo() {
-		return Anyo;
+		return anyo;
 	}
 	
 	
@@ -41,7 +52,7 @@ public abstract class Contenido  {
 	 *	@param anyo (Date) anyo del contenido
 	 */
 	public void setAnyo(Date anyo) {
-		Anyo = anyo;
+		this.anyo = anyo;
 	}
 
 
@@ -96,5 +107,24 @@ public abstract class Contenido  {
 	 */
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+
+
+	/**
+	 * Getter de Autor
+	 * @return autor del contenido (Usuario)
+	 */
+	public Usuario getAutor() {
+		return autor;
+	}
+
+
+	/**
+	 *Setter de Autor
+	 * @param autor del contenido (Usuario)
+	 */ 
+	public void setAutor(Usuario autor) {
+		this.autor = autor;
 	}
 }
