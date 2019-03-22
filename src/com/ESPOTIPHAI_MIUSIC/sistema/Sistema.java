@@ -1,4 +1,8 @@
 package com.ESPOTIPHAI_MIUSIC.sistema;
+import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Album;
+import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Cancion;
+import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Contenido;
+import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
@@ -13,9 +17,10 @@ import java.awt.event.MouseListener;
 
 public class Sistema {
 
-	private FechaSimulada fecha;
+	
 	private ArrayList<Usuario> usuarios_totales;
-	private ArrayList<Contenido> contenidos_totales;
+	private ArrayList<Cancion> canciones_totales;
+	private ArrayList<Album> albumes_totales;
 	private Usuario administrador;
 	private Usuario usuario_actual;
 	private static Sistema sistema = null;
@@ -30,23 +35,24 @@ public class Sistema {
 	
 	public Sistema() {
 		sistema.usuarios_totales = new ArrayList<Usuario>();
-		sistema.contenidos_totales = new ArrayList<Contenido>();
+		sistema.canciones_totales = new ArrayList<Cancion>();
+		sistema.albumes_totales = new ArrayList<Album>();
 		sistema.administrador = null;
 		sistema.usuario_actual = null;
 	}
 	
 	//GETTERS
 	
-	public FechaSimulada getFechaActual() {
-		return sistema.fecha;
-	}
-	
 	public ArrayList<Usuario> getUsuariosTotales(){
 		return sistema.usuarios_totales;
 	}
 	
-	public ArrayList<Contenido> getContenidosTotales(){
-		return sistema.contenidos_totales;
+	public ArrayList<Cancion> getCancionTotales(){
+		return sistema.canciones_totales;
+	}
+	
+	public ArrayList<Album> getAlbumTotales(){
+		return sistema.albumes_totales;
 	}
 	
 	public Usuario getAdministrador() {
@@ -66,9 +72,9 @@ public class Sistema {
 		Scanner input = new Scanner(System.in);
 		String nombre_usuario=null;
 		String nombre_autor=null;
-		String fecha_nacimiento=null;
+		LocalDate fecha_nacimiento=null;
+		
 		String contrasenia=null;
-		FechaSimulada fecha_registro = getFechaActual();
 		boolean registrado_correcto = false;
 		int i=0;
 		
@@ -78,17 +84,19 @@ public class Sistema {
 			nombre_usuario = input.next();
 			System.out.println("Inserte su nombre de autor: ");
 			nombre_autor = input.next();
-			System.out.println("Inserte su fecha de nacimiento: ");
-			fecha_nacimiento = input.next();
+			System.out.println("Inserte su dia de nacimiento: ");
+			dia 
+			
+			
+			
+			
+			LocalDate.now().withDayOfMonth(1).withMonth(3).withYear(2017)
+			
 			System.out.println("Inserte su contraseña: ");
 			contrasenia = input.next();
 			
-			//Hasta aqui un usuario puede decidir si rellenar para crear, salir del resgitro o iniciar sesion 
-			//Rellenar datos y entonces mirar si existe o no el usuario
-			//AQUI DAMOS A ACEPTAR Y BUSCA A VER SI YA ESTA ESE USUARIO CREADO Y SI NO ES ASI LO CREA Y LO INSERTA
-			
 				for(Usuario usuario: usuarios_totales) {
-					if(usuario.getNombreUsuario().equals(nombre_usuario) == true && usuario.getNombreAutor().equals(nombre_autor) == true ) {
+					if(usuario.getNombre_usuario().equals(nombre_usuario) == true && usuario.getNombre_autor().equals(nombre_autor) == true) {
 						break;
 					}
 					i++;
@@ -101,7 +109,7 @@ public class Sistema {
 				}
 		}
 		
-		Usuario usuario_registrado_nuevo = new Usuario(nombre_usuario,nombre_autor,fecha_nacimiento,fecha_registro.getHoy(),contrasenia,null,false,null,sistema.usuarios_totales.size(), null); 
+		Usuario usuario_registrado_nuevo = new Usuario(nombre_usuario,nombre_autor,fecha_nacimiento, contrasenia,sistema.usuarios_totales.size()); 
 		sistema.usuarios_totales.add(usuario_registrado_nuevo);
 		return true;
 	}
@@ -121,7 +129,7 @@ public class Sistema {
 			contrasenia = input.next();
 			
 			for(Usuario usuario: usuarios_totales) {
-				if(usuario.getNombreUsuario().equals(nombre_usuario) == true && usuario.getContrasena().equals(contrasenia) == true) {
+				if(usuario.getNombre_usuario().equals(nombre_usuario) == true && usuario.getContrasena().equals(contrasenia) == true) {
 					sistema.usuario_actual = usuario;
 					iniciado_sesion_correcto = true;
 					break;
@@ -145,14 +153,14 @@ public class Sistema {
 	//**MEJORAR_CUENTA_POR_PAGO
 	
 	//**MEJORAR_CUENTA_POR_REPRO
-	public boolean mejorarCuentaRepro() {
+	/*public boolean mejorarCuentaRepro() {
 		FechaSimulada fecha_avanzada = null;
 		fecha_avanzada.avanzar(15);
 		int ide=-1;
 				
 		for(Contenido contenido: contenidos_totales) {
 			if(contenido.getReproducciones() >= 30) {
-				ide = contenido.getIdentificadorUsuario();
+				ide = contenido.getId();
 				for(Usuario usuario: usuarios_totales) {
 					if(usuario.getId() == ide) {
 						usuario.setFechaInicioPro(sistema.fecha.getHoy());
@@ -166,12 +174,41 @@ public class Sistema {
 		}
 		
 		return true;
-	}
+	}*/
 	//------------------------------------------------------------------------
 	
 	
 	//-----------------------CONTENIDO-----------------------------------
 	//**BUSQUEDA
+	public ArrayList<Cancion> buscadorTitulos(String palabra) {
+		
+		//TITULO ==> BUSCAMOS POR CANCIONES Y PONEMOS UNICAMENTE OBJETOS DE ESTE TIPO
+		ArrayList<Cancion> lista_filtrada = new ArrayList<Cancion>();
+		for(Cancion cancion: sistema.canciones_totales) {
+			if(cancion.getTitulo().contains(palabra) == true || cancion.getTitulo().equals(palabra) == true) {
+				lista_filtrada.add(cancion);
+			}
+		}
+		return lista_filtrada;
+	}
+	
+	public ArrayList<Album> buscadorAlbumes(String palabra){
+	
+		ArrayList<Album> lista_filtrada = new ArrayList<Album>();
+		for(Album album:albumes_totales) {
+			if(album.getTitulo().contains(palabra) == true || album.getTitulo().equals(palabra) == true) {
+				lista_filtrada.add(album);
+			}
+		}
+		
+		return lista_filtrada;
+	}
+	
+	public ArrayList<Contenido> buscadorAutores(String palabra){
+		
+		
+	}
+	
 	//**SUBIR_CANCION
 	//**BORRAR_CANCION
 	//**CREAR_ALBUM
@@ -184,7 +221,7 @@ public class Sistema {
 	//**EMPEORAR_CUENTA
 	public void empeorarCuenta() {
 		for(Usuario usuario:usuarios_totales) {
-			if(usuario.getFechaFinPro().equals(sistema.fecha.getHoy()) == true) {
+			if(usuario.getFecha_inicio_pro().avanzar()) {
 				usuario.setFechaInicioPro(null);
 				usuario.setFechaFinPro(null);
 				usuario.setPremium(false);
@@ -207,12 +244,15 @@ public class Sistema {
 		int eleccion_menu_1 = -1;
 		int eleccion_menu_2 = -1;
 		int salir=0;
+		int atras = 0;
 		Scanner input = new Scanner(System.in);
 		
+		
+		while(true) {
 		//VEMOS DIFERENCIA CUANDO EL USUARIO ACTUAL HA INICIADO SESION POR TANTO
 		if(sistema.usuario_actual == null) { //CASO DE PODER REGISTRAR E INICIAR SESION Y BUSCAR
 			
-			while(sistema.usuario_actual != null /*&& mouselistener pressed*/) { //PAGINA PRINCIPAL NO REGISTRADO
+			while(sistema.usuario_actual == null /*&& mouselistener pressed*/) { //PAGINA PRINCIPAL NO REGISTRADO
 				eleccion_menu_1 = input.nextInt();
 				if(eleccion_menu_1 == 1) { //BUSQUEDA
 					
@@ -221,14 +261,68 @@ public class Sistema {
 				}else if(eleccion_menu_1 == 3) { //INICIO SESION
 					break;
 					
-				}else if(eleccion_menu_1 == 0) { //SALIR
+				}else if(eleccion_menu_1 == 0) { //SALIR DE APPLICACION
 					salir = 1;
 					break;
 				}
 			}
 			
-		}else if(sistema.usuario_actual != null) { //CASO EN EL QUE SE DAN LAS FUNCIONES DE UN USUARIO QUE HA INICIADO SESION
-			
+		}
+		
+		if(sistema.usuario_actual != null) { //CASO EN EL QUE SE DAN LAS FUNCIONES DE UN USUARIO QUE HA INICIADO SESION
+			while(sistema.usuario_actual != null /*&& mouselistener pressed*/) {
+				eleccion_menu_1 = input.nextInt();
+				
+				if(eleccion_menu_1 == 1) { //BUSQUEDA
+					
+				}else if(eleccion_menu_1 == 2) { //AÑADIR/ELIMINAR/REPRODUCIR CANCION
+					while((eleccion_menu_2 = input.nextInt())!= 0) {
+						if(eleccion_menu_2 == 1) { //REPRODUCIR CANCION
+							
+						}else if(eleccion_menu_2 == 2) { //AÑADIR CANCION
+							
+						}else if(eleccion_menu_2 == 3) { //ELIMINAR CANCION
+							
+						}else if(eleccion_menu_2 == 0) { //ATRAS -- RESETEO
+							eleccion_menu_2 = -1;
+							break;
+						}
+					}
+				}else if(eleccion_menu_1 == 3) { //AÑADIR/ELIMINAR/REPRODUCIR ALBUM
+					while((eleccion_menu_2 = input.nextInt())!= 0) {
+						if(eleccion_menu_2 == 1) { //REPRODUCIR ALBUM
+							
+						}else if(eleccion_menu_2 == 2) { //AÑADIR ALBUM
+							
+						}else if(eleccion_menu_2 == 3) { //ELIMINAR ALBUM
+							
+						}else if(eleccion_menu_2 == 0) { //ATRAS -- RESETEO
+							eleccion_menu_2 = -1;
+							break;
+						}
+					}
+				}else if(eleccion_menu_1 == 4) { //AÑADIR/ELIMINAR/REPRODUCIR LISTA
+					
+				}else if(eleccion_menu_1 == 5) { //PERFIL
+ 					while((eleccion_menu_2 = input.nextInt()) != 0) {
+ 						if(eleccion_menu_2 == 1) { //MEJORAR CUENTA
+ 							
+ 						}else if(eleccion_menu_2 == 2) { //CERRAR SESION
+ 							boolean estado_sesion = cerrarSesion();
+ 						}else if(eleccion_menu_2 == 3) { //ELIMINAR CUENTA
+ 							
+ 						}else if(eleccion_menu_2 == 0) { //ATRAS
+ 							eleccion_menu_2 = -1;
+ 							break;
+ 						}
+ 						
+ 					}
+ 					
+				}else if(eleccion_menu_1 == 6) { //SALIR DE LA APPLICACION
+					salir = 1;
+					break;
+				}
+			}
 		}
 		
 		if(salir == 1) { //SALIDA CORRECTA 
@@ -236,7 +330,7 @@ public class Sistema {
 		}
 		
 		return -1; //PARA AVISAR DE QUE SE HA FORZADO LA SALIDA
+		}
 	}
-	
 }
 
