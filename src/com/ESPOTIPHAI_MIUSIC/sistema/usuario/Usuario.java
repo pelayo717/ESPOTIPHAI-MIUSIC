@@ -1,3 +1,5 @@
+package com.ESPOTIPHAI_MUSIC.sistema.usuario;
+/**
 package SPOTI;
 
 /**
@@ -20,6 +22,7 @@ public class Usuario {
 	private LocalDate fecha_registro;
 	private String contrasena;
 	private LocalDate fecha_inicio_pro;
+	private LocalDate fecha_fin_pro;
 	private Boolean premium;
 	private Integer numero_repro;
 	private Integer id;
@@ -37,12 +40,12 @@ public class Usuario {
 		this.fecha_registro = LocalDate.now();
 		this.contrasena = contrasena;
 		this.fecha_inicio_pro = null;
+		this.fecha_fin_pro = null;
 		this.premium = false;
 		this.id = id;
 		this.seguidores = new ArrayList<Integer>();
 		//this.listas = new ArrayList<Listas>();
 	}
-	
 	
 	public String getNombre_usuario() {
 		return nombre_usuario;
@@ -52,7 +55,7 @@ public class Usuario {
 		return nombre_autor;
 	}
 	
-	public LocalDate getFecha_nacimiento() {
+	public String getFecha_nacimiento() {
 		return fecha_nacimiento;
 	}
 	
@@ -74,6 +77,18 @@ public class Usuario {
 	
 	public Integer getId() {
 		return id;
+	}
+	
+	public Integer getNumeroReproducciones() {
+		return numero_repro;
+	}
+	
+	public Integer sumarReproduccion() {
+		numero_repro = numero_repro + 1;
+		if(numero_repro >= umbral) {
+			mejorarCuentaPorReproducciones();
+		}
+		return numero_reproducciones;
 	}
 	
 	
@@ -104,12 +119,13 @@ public class Usuario {
 		
 		fecha_inicio_pro = LocalDate.now();
 		premium = true;
-		//cambiar fechafinal pro
-		return false;
+		fecha_fin_pro = fecha_inicio_pro.plusDays(30);
+		return true;
 	}
 	public Boolean emperorarCuenta() {
 		premium = false;
 		fecha_inicio_pro = null;
+		fecha_fin_pro = null;
 		return false;
 	}
 	
@@ -119,14 +135,15 @@ public class Usuario {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Boolean b = true;
-		Boolean x = true; 
-		ArrayList<Integer> seguidores = new ArrayList<Integer>();
+		//Boolean b = true;
+		//Boolean x = true; 
+		//ArrayList<Integer> seguidores = new ArrayList<Integer>();
 		//Usuario n = new Usuario("javier", "rafa", LocalDate.now(), LocalDate.now(), "hola", LocalDate.now(), false, LocalDate.now(), 5, seguidores);
 
-		for (int i=1; i<=10; i++){
-			seguidores.add(i); 
-		}
-		x = n.seguirUsuario(11, b);
+		//for (int i=1; i<=10; i++){
+			//seguidores.add(i); 
+		//}
+		//x = n.seguirUsuario(11, b);
+	//}
 	}
 }
