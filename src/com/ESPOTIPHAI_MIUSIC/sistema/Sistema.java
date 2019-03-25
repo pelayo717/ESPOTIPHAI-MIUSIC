@@ -3,6 +3,7 @@ import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Album;
 
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Cancion;
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Contenido;
+import com.ESPOTIPHAI_MIUSIC.sistema.contenido.EstadoCancion;
 import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
 
 import es.uam.eps.padsof.telecard.FailedInternetConnectionException;
@@ -15,13 +16,19 @@ import pads.musicPlayer.exceptions.Mp3InvalidFileException;
 import pads.musicPlayer.exceptions.Mp3PlayerException;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 
 /**
- * La clase sistema es la encargada de trabajar con objetos de la clase Contenido que permite reproducirlos, pararlos asi como comentarlos y otras mÃºltiples funcionalidades. Por otra parte
- * esta clase es la encargada de gestionar los usuarios. Permite iniciar sesiÃ³n y registrarse a todos los que no lo hicieron y les proporciona diferentes actividades dependiendo del tipo de usuario
- * que sea cada uno de este modo, aquellos interesados podran disponer de una versiÃ³n mejorada pagando de manera menusal o obtenerla mediante unos requisitos.
+ * La clase sistema es la encargada de trabajar con objetos de la clase Contenido que permite reproducirlos, pararlos asi como comentarlos y otras múltiples funcionalidades. Por otra parte
+ * esta clase es la encargada de gestionar los usuarios. Permite iniciar sesión y registrarse a todos los que no lo hicieron y les proporciona diferentes actividades dependiendo del tipo de usuario
+ * que sea cada uno de este modo, aquellos interesados podran disponer de una versión mejorada pagando de manera menusal o obtenerla mediante unos requisitos.
  * @author: Pelayo Rodriguez Aviles
  * @version: 24/03/2019
  */
@@ -49,7 +56,7 @@ public class Sistema implements java.io.Serializable{
 	
 	/**
      * Constructor de la clase.
-     * @param numeroItems El parÃ¡metro numeroItems define el nÃºmero de elementos que va a tener la serie aleatoria
+     * @param numeroItems El parámetro numeroItems define el número de elementos que va a tener la serie aleatoria
      */
 	
 	public Sistema() throws FileNotFoundException, Mp3PlayerException {
@@ -154,6 +161,7 @@ public class Sistema implements java.io.Serializable{
 	public boolean mejorarCuentaPago(String numero_tarjeta,String concepto){
 		try {
 			TeleChargeAndPaySystem.charge(numero_tarjeta, concepto, sistema.getPrecioPremium());
+			return true;
 		}catch(FailedInternetConnectionException fe) {
 			fe = new FailedInternetConnectionException(numero_tarjeta);
 			System.out.println("Error failed internet connection");
@@ -172,7 +180,6 @@ public class Sistema implements java.io.Serializable{
 			System.out.println(re.getMessage());
 			return false;
 		}
-		return false;
 	}
 	
 	
@@ -233,7 +240,7 @@ public class Sistema implements java.io.Serializable{
 		}
 		
 		for(Cancion cancion: sistema.canciones_totales) {
-			if(cancion.getId() == ide) {
+			if(cancion.getAutor().getId() == ide) {
 				lista_autor_canciones.add(cancion);
 			}
 		}
@@ -262,7 +269,7 @@ public class Sistema implements java.io.Serializable{
 		}
 		
 		for(Album album: sistema.albumes_totales) {
-			if(album.getId() == ide) {
+			if(album.getAutor().getId() == ide) {
 				lista_autor_albumes.add(album);
 			}
 		}
@@ -308,8 +315,8 @@ public class Sistema implements java.io.Serializable{
 	
 	//---------------------CONTENIDO------------------------------------
 	
-	//**AÃ‘ADIR A LA COLA DE REPRODUCCION
-	public void aÃ±adirCola(String cancion_a_aniadir) {
+	//**AÑADIR A LA COLA DE REPRODUCCION
+	public void añadirCola(String cancion_a_aniadir) {
 		try {
 			sistema.repro_mp3.add(cancion_a_aniadir);
 			return;
@@ -326,7 +333,7 @@ public class Sistema implements java.io.Serializable{
 			sistema.repro_mp3.play();
 			return;
 		}catch(Mp3PlayerException pe) {
-			System.out.println("Error play songâ€ ");
+			System.out.println("Error play song");
 			pe.toString();
 			return;
 		}
@@ -357,15 +364,67 @@ public class Sistema implements java.io.Serializable{
 		}
 	}
 	
-	
 	//**SUBIR_CANCION
-	//**BORRAR_CANCION
+	public boolean crearCancion(Date anyo,String titulo, int id, Usuario autor, EstadoCancion estado,boolean reproducible){
+		String formato = titulo + ".mp3";
+		double duracion = devolverDuracion(formato);
+		Cancion c = new Cancion(anyo,titulo,(int) duracion,id,autor,estado,reproducible,formato);
+		guardarCancionTemporalmente(c);
+		return true;
+	}
+	
+	//**BORRAR_CANCION UN USUARIO BORRA LAS SUYAS CLARO ESTA
+	public void borrarCancion(String titulo) {
+		for(int x=0; x < sistema.canciones_totales.size(); x++) {
+			if(sistema.canciones_totales.get(x).getTitulo().equals(titulo) == true && sistema.canciones_totales.get(x).getAutor().getId() == sistema.usuario_actual.getId()) {
+				sistema.canciones_totales.remove(sistema.canciones_totales.get(x));
+				break;
+			}
+		}
+		return;
+	}
 	
 	//**CREAR_ALBUM
+	public boolean crearAlbum(Date anyo,String titulo,int id,Usuario autor,ArrayList<Cancion> contenido) {
+		Album album = new Album(anyo,titulo,0,id,autor,contenido);
+		boolean existe=false;
+		for(int x=0; x < sistema.albumes_totales.size(); x++) {
+			if(sistema.albumes_totales.get(x).getTitulo().equals(titulo) == true && sistema.albumes_totales.get(x).getAutor().getId() == autor.getId()) {
+				return false;
+			}
+		}
+		
+		sistema.albumes_totales.add(album);
+		return true;
+	
+	}
+	
 	//**BORRAR_ALBUM
+	public void borrarAlbum(String titulo) {
+		for(int x=0; x < albumes_totales.size(); x++) {
+			if(sistema.albumes_totales.get(x).getTitulo().equals(titulo) == true && sistema.albumes_totales.get(x).getAutor().getId() == sistema.usuario_actual.getId()) {
+				sistema.albumes_totales.remove(sistema.albumes_totales.get(x));
+				break;
+			}
+		}
+		return;
+	}
+	
+	//**AÑADIR_A_ALBUM
+	//**QUITAR_DE_ALBUM
 	
 	//**CREAR_LISTA
+	public boolean crearLista() {
+		return false;
+	}
+	
 	//**BORAR_LISTA
+	public void borrarLista() {
+		
+	}
+	
+	//**AÑADIR_A_LISTA
+	//**QUITAR_DE_LISTA
 	
 	//---------------------ADMINISTRADOR------------------------------------
 	
@@ -386,15 +445,89 @@ public class Sistema implements java.io.Serializable{
 	public void bloquearUsuario(int id) {
 		for(Usuario usuario:sistema.usuarios_totales) {
 			if(usuario.getId() == id) {
-				//usuario.bloquear();
+				usuario.bloquear();
 			}
 		}
 		return;
 	}
 	
 	//**DESBLOQUEAR USUARIO
+	public boolean desbloquearUsuario(int id) {
+		for(Usuario usuario:sistema.usuarios_totales) {
+			if(usuario.getId() == id) {
+				usuario.desbloquear();
+				break;
+			}
+		}
+		
+		return true;
+	}
 	
-	//**GUARDAR DATOS Y CARGAR DATOS
+	//**GUARDAR CANCION PARA INSPECCION ANTES DE INCLUIR EN ARRAY DE CANCIONES
+	public boolean guardarCancionTemporalmente(Cancion cancion){
+		try {
+			FileOutputStream fileOut=new FileOutputStream("canciones_temporales.temp");
+			ObjectOutputStream oos =new ObjectOutputStream(fileOut);
+			oos.writeObject(cancion);
+			oos.close();
+			return true;
+			
+		}catch(IOException ie) {
+			System.out.println("Error interrupted I/O operations");
+			ie.toString();
+			return false;
+		}
+	}
+	//**CARGAR CANCION TOTALMENTE AL SISTEMA UNA VEZ QUE HA SIDO COMPROBADA 
+	public Cancion cargarCancionTemporalmente() {
+		try {
+			FileInputStream in = new FileInputStream("canciones_temporales.temp");
+			ObjectInputStream oin = new ObjectInputStream(in);
+			Cancion cancion = (Cancion) oin.readObject();
+			return cancion;
+		}catch(IOException ie) {
+			System.out.println("Error interrupted I/0 operations");
+			ie.toString();
+			return null;
+		}catch(ClassNotFoundException ce) {
+			System.out.println("Error class not found");
+			ce.toString();
+			return null;
+		}
+	}
+	
+	//**GUARDAR DATOS GENERALES
+	public boolean guardarDatosGenerales() {
+		try {
+			FileOutputStream fileOut=new FileOutputStream("datos.temp");
+			ObjectOutputStream oos =new ObjectOutputStream(fileOut);
+			oos.writeObject(this.sistema);
+			oos.close();
+			return true;
+		}catch(IOException ie) {
+			System.out.println("Error interrupted I/O operations");
+			ie.toString();
+			return false;
+		}
+	}
+	
+	//**CARGAR DATOS GENERALES
+	public void cargarDatosGenerales(){
+		try {
+			FileInputStream in = new FileInputStream("datos.temp");
+			ObjectInputStream oin = new ObjectInputStream(in);
+			this.sistema = (Sistema) oin.readObject();
+		}catch(IOException ie) {
+			System.out.println("Error interrupted I/0 operations");
+			ie.toString();
+			return;
+		}catch(ClassNotFoundException ce) {
+			System.out.println("Error class not found");
+			ce.toString();
+			return;
+		}
+	}
+	
 	
 	//**VALIDAR_CANCION
 	
@@ -403,4 +536,3 @@ public class Sistema implements java.io.Serializable{
 	//**INCLUIR_CANCION_NO_EXPLICITA
 
 }
-	
