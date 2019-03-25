@@ -1,28 +1,22 @@
-/*package com.ESPOTIPHAI_MUSIC.sistema.usuario;*/
-package Padsof;
-/**
- * 
- */
-
-    
-//package com.ESPOTIPHAI_MUSIC.sistema.usuario;
+package com.ESPOTIPHAI_MUSIC.sistema.usuario;
 /**
 package SPOTI;
+
 /**
  * 
  */
 import java.time.LocalDate;
-import java.util.Stack;
 
 
 import java.util.ArrayList;
+//import java.util.Stack;
+
 
 /**
- * Clase de Usuario con la que vamos a poner cambiar todos los atributos de la clase 
- * y tendremos diferentes funciones las cuales ayudaran a darle a la aplicacion la funcionalidad requerida
- * @author Manuel Salvador, Pelayo Rodriguez, Roberto Pirk
- *
- */
+* Clase de Usuario con la que vamos a poner cambiar todos los atributos de la clase 
+* y tendremos diferentes funciones las cuales ayudaran a darle a la aplicacion la funcionalidad requerida
+* @author Manuel Salvador, Pelayo Rodriguez, Roberto Pirk
+*/
 public class Usuario {
 	private String nombre_usuario;
 	private String nombre_autor;
@@ -33,10 +27,11 @@ public class Usuario {
 	private Boolean premium;
 	private Integer numero_repro;
 	private boolean bloqueado;
+	private LocalDate fecha_inicio_bloqueado;
 	private Integer id;
 	private ArrayList<Usuario> seguidores;
 	private ArrayList<Usuario> seguidos;
-	private ArrayList<Lista> listas;
+	//private ArrayList<Lista> listas;
 	
 	
 	/**
@@ -54,12 +49,14 @@ public class Usuario {
 		this.fecha_nacimiento = fecha_nacimiento;
 		this.fecha_registro = LocalDate.now();
 		this.contrasena = contrasena;
+		this.numero_repro = 0;
 		this.fecha_inicio_pro = null;
+		this.fecha_inicio_bloqueado = null;
 		this.premium = false;
 		this.id = id;
 		this.seguidores = new ArrayList<Usuario>();
 		this.seguidos = new ArrayList<Usuario>();
-		this.listas = new ArrayList<Listas>();
+		//this.listas = new ArrayList<Listas>();
 	}
 	
 	/**
@@ -128,6 +125,13 @@ public class Usuario {
 	}
 	
 	/**
+	 * Funcion que devuelve un tipo boolean indicando si la cuenta esta en estado bloqueado o no
+	 * @return bloqueado: el status de la cuenta en ese momento, si esta bloqueada o no	 
+	 */
+	public boolean getBloqueado() {
+		return bloqueado;
+	}
+	/**
 	 * Funcion que devuelve el numero de reproducciones del usuario
 	 * @return numero_repro: atributo del usuario que indica el numero de reproducciones 
 	 */
@@ -150,35 +154,41 @@ public class Usuario {
 	
 	
 	/**
-	 * 
-	 * @param id: Id del usuario al que queremos seguir o dejar de seguir
-	 * @param bool: Boolean que dependiendo de si es true o false indica si se quiere seguir al 
-	 * usuario o dejar de seguirle
+	 * Funcion con la que un usuario puede seguir a otro usuario
+	 * @param x: Usuario al que queremos seguir
 	 * @return true si se ejecuta correctamente, false si hay algun error
 	 */
-	public Boolean seguirUsuario(Usuario x, Boolean bool) { //La funcion es status 
-		/*Seguimos al usuario*/
-			
-				seguidores.add(x);
-				System.out.println("Se ha seguido al usuario correctamente");
-				return true;  //Status.OK
-			
-				System.out.println("No se puede seguir al usuario porque ya le sigue\n");
+	public Boolean seguirUsuario(Usuario x) { 
+			if(seguidos.contains(x)) //Ya se sigue al usuario
 				return false;
+			else {
+				seguidos.add(x);
+				System.out.println("Se ha seguido al usuario correctamente");
+				return true;
 			}
-		//Status.OK
+	}
+	
+	/**
+	 * Funcion con la que un usuario puede dejar de seguir a otro usuario
+	 * @param x: Usuario al que queremos dejar de seguir
+	 * @return true si se ejecuta correctamente la funcion y le ha dejado de seguir, false si hay algun error
+	 */
+	public boolean dejarDeSeguirUsuario(Usuario x) {
+		if(seguidos.contains(x)) {
+			seguidos.remove(x);
+			return true;
+		} else {
+			return false;
+		}	
+	}
 	
 	/**
 	 * Funcion que mejora la cuenta de un usuario modificando los atributos necesarios 
 	 * y poniendo la fecha de inicio pro a la fecha actual
-	 * @param id_interno: numero que identifica el libro del resto
-	 * @return true: si se ejecuta correctamente 
 	 */
-	public Boolean mejorarCuentaPorReproducciones() {
-		
+	public void mejorarCuentaPorReproducciones() {
 		fecha_inicio_pro = LocalDate.now();
 		premium = true;
-		return true;
 	}
 	
 	/**
@@ -190,22 +200,11 @@ public class Usuario {
 		fecha_inicio_pro = null;
 	}
 	
-	
-	
 	/**
-	 * 
-	 */
-	public static void main(String[] args) {
-		//Boolean b = true;
-		//Boolean x = true; 
-		//ArrayList<Integer> seguidores = new ArrayList<Integer>();
-		//Usuario n = new Usuario("javier", "rafa", LocalDate.now(), LocalDate.now(), "hola", LocalDate.now(), false, LocalDate.now(), 5, seguidores);
-
-		//for (int i=1; i<=10; i++){
-			//seguidores.add(i); 
-		//}
-		//x = n.seguirUsuario(11, b);
-	//}
+	 * Funcion que bloquea la cuenta del usuario modificando los atributos correspondientes
+	 */		
+	public void bloquearcuenta() {
+		bloqueado = true;
+		fecha_inicio_bloqueado = LocalDate.now();
 	}
 }
-
