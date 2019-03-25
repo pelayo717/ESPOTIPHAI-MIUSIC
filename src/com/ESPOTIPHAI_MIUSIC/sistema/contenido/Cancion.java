@@ -10,15 +10,15 @@ import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
  */
 public class Cancion extends ContenidoComentable {
 	private EstadoCancion estado;
-	private Boolean reproducible;
-	private Integer num_reprod;
+	private boolean reproducible;
+	private int num_reprod;
 	
 	/**
 	 *	Constructor de Cancion
 	 *	@param estado  estado de la cancion
 	 *	@param reproducible  si la cacion es o no reproducible
 	 */
-	public Cancion(Date anyo, String titulo, Integer duracion,  Integer id, Usuario autor, EstadoCancion estado,Boolean reproducible ) {
+	public Cancion(Date anyo, String titulo, int duracion,  int id, Usuario autor, EstadoCancion estado,boolean reproducible ) {
 		super(anyo, titulo, duracion, id, autor, new ArrayList<Comentario>());
 		this.setNum_reprod(num_reprod);
 		this.setEstado(estado);
@@ -93,7 +93,7 @@ public class Cancion extends ContenidoComentable {
 	 * Getter de reproducible
 	 * @return reproducible si una cancion es reproducible o no
 	 */
-	public Boolean getReproducible() {
+	public boolean getReproducible() {
 		return reproducible;
 	}
 
@@ -101,7 +101,7 @@ public class Cancion extends ContenidoComentable {
 	 * Setter de reproducible
 	 * @param reproducible si es reproducible o no la cancion
 	 */
-	public void setReproducible(Boolean reproducible) {
+	public void setReproducible(boolean reproducible) {
 		this.reproducible = reproducible;
 	}
 
@@ -109,7 +109,7 @@ public class Cancion extends ContenidoComentable {
 	 * Getter de numero de reproducciones
 	 * @return num_reprod numero de reproducciones de la cancion
 	 */
-	public Integer getNum_reprod() {
+	public int getNum_reprod() {
 		return num_reprod;
 	}
 
@@ -117,7 +117,7 @@ public class Cancion extends ContenidoComentable {
 	 * Setter del numero de reproducciones
 	 * @param num_reprod el numero de reproducciones de la cacion
 	 */
-	public void setNum_reprod(Integer num_reprod) {
+	public void setNum_reprod(int num_reprod) {
 		this.num_reprod = num_reprod;
 	}
 	

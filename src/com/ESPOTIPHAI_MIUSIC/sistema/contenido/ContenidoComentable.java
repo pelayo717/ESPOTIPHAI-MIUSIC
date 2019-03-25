@@ -12,7 +12,7 @@ public abstract class ContenidoComentable extends Contenido {
 	private ArrayList<Comentario> comentarios = new ArrayList<Comentario>();
 	
 	
-	public ContenidoComentable (Date anyo, String titulo, Integer duracion,  Integer id, Usuario autor, ArrayList<Comentario> comentarios) {
+	public ContenidoComentable (Date anyo, String titulo, int duracion,  int id, Usuario autor, ArrayList<Comentario> comentarios) {
 		super(anyo, titulo, duracion, id, autor);
 		this.setComentarios(comentarios);
 	}
