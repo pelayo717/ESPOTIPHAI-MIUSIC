@@ -1,4 +1,4 @@
-package Padsof;
+package com.ESPOTIPHAI_MIUSIC.sistema.usuario;
 
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,14 +52,35 @@ class pruebaUsuario {
 	public void testEmpeorarCuenta() {
 		x.emperorarCuenta();
 		
-		assertEquals(true, x.getPremium());
+		assertEquals(false, x.getPremium());
 		
 	}
 	
 	@Test
 	public void testBloquearCuenta() {
-		x.bloquearcuenta();
-		assertEquals(true, x.getBloqueado());
+		x.bloquearCuentaIndefinido();
+		assertEquals(true, x.getEstadoBloqueado());
+	}
+	
+	@Test
+	public void testDesbloquearCuenta() {
+		x.desbloquearCuenta();
+		//assertEquals();
+		
+	}
+	
+	@Test
+	public void testBloquearCuentaIndefinido() {
+		x.bloquearCuentaIndefinido();
+		//assertEquals();
+		
+	}
+	
+	@Test
+	public void testDesbloquearCuentaTemporal() {
+		x.bloquearCuentaTemporal();
+		//assertEquals();
+		
 	}
 }
 

@@ -1,12 +1,14 @@
 //package com.ESPOTIPHAI_MUSIC.sistema.usuario;
-package Padsof;
+package com.ESPOTIPHAI_MIUSIC.sistema.usuario;
 /**
 package SPOTI;
 /**
  * 
  */
 import java.time.LocalDate;
-
+import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Album;
+import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Cancion;
+import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Lista;
 
 import java.util.ArrayList;
 //import java.util.Stack;
@@ -32,8 +34,8 @@ public class Usuario {
 	private ArrayList<Usuario> seguidores;
 	private ArrayList<Usuario> seguidos;
 	private ArrayList<Lista> listas;
-	private ArrayList<Canciones> canciones;
-	private ArrayList<Albumes> albumes;
+	private ArrayList<Cancion> canciones;
+	private ArrayList<Album> albumes;
 	
 	/**
 	 * Constructor de la clase Usuario, donde se inicializan los diferentes atributos y se les asignas sus respectivos valores
@@ -57,9 +59,9 @@ public class Usuario {
 		this.id = id;
 		this.seguidores = new ArrayList<Usuario>();
 		this.seguidos = new ArrayList<Usuario>();
-		//this.listas = new ArrayList<Listas>();
-		this.canciones = new ArrayList<Canciones>();
-		this.albumes = new ArrayList<Albumes>();
+		this.listas = new ArrayList<Lista>();
+		this.canciones = new ArrayList<Cancion>();
+		this.albumes = new ArrayList<Album>();
 	}
 	
 	/**
@@ -120,6 +122,14 @@ public class Usuario {
 	}
 	
 	/**
+	 * Funcion que devuelve el estado del usuario
+	 */
+	public enumeracionBloqueado getEstadoBloqueado() {
+		return bloqueado;
+		
+	}
+	
+	/**
 	 * Funcion que devuelve el id del usuario
 	 * @return id: devuelve el id del usuario 
 	 */
@@ -144,6 +154,27 @@ public class Usuario {
 	 */
 	public Integer getNumeroReproducciones() {
 		return numero_repro;
+	}
+	
+	/**
+	 * Funcion que devuelve el arrayList de listas de reproduccion
+	 */
+	public ArrayList<Lista> getListas() {
+		return listas;
+	}
+	
+	/**
+	 * Funcion que devuelve el ArrayList de canciones de la aplicacion
+	 */
+	public ArrayList<Cancion> getCanciones() {
+		return canciones;
+	}
+	
+	/**
+	 * Funcion que devuelve el ArrayList de albumes de la aplicacion;
+	 */
+	public ArrayList<Album> getAlbumes() {
+		return albumes;
 	}
 	
 	/**
