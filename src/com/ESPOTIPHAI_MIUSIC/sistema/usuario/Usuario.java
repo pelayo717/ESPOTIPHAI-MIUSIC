@@ -1,7 +1,7 @@
-package com.ESPOTIPHAI_MUSIC.sistema.usuario;
+//package com.ESPOTIPHAI_MUSIC.sistema.usuario;
+package Padsof;
 /**
 package SPOTI;
-
 /**
  * 
  */
@@ -26,13 +26,14 @@ public class Usuario {
 	private LocalDate fecha_inicio_pro;
 	private Boolean premium;
 	private Integer numero_repro;
-	private boolean bloqueado;
+	private enumeracionBloqueado bloqueado;
 	private LocalDate fecha_inicio_bloqueado;
 	private Integer id;
 	private ArrayList<Usuario> seguidores;
 	private ArrayList<Usuario> seguidos;
-	//private ArrayList<Lista> listas;
-	
+	private ArrayList<Lista> listas;
+	private ArrayList<Canciones> canciones;
+	private ArrayList<Albumes> albumes;
 	
 	/**
 	 * Constructor de la clase Usuario, donde se inicializan los diferentes atributos y se les asignas sus respectivos valores
@@ -57,6 +58,8 @@ public class Usuario {
 		this.seguidores = new ArrayList<Usuario>();
 		this.seguidos = new ArrayList<Usuario>();
 		//this.listas = new ArrayList<Listas>();
+		this.canciones = new ArrayList<Canciones>();
+		this.albumes = new ArrayList<Albumes>();
 	}
 	
 	/**
@@ -64,7 +67,7 @@ public class Usuario {
 	 * @param id_interno: numero que identifica el libro del resto
 	 * @return nombre_usuario: devuelve el nombre del usuario
 	 */
-	public String getNombre_usuario() {
+	public String getNombreUsuario() {
 		return nombre_usuario;
 	}
 	
@@ -72,7 +75,7 @@ public class Usuario {
 	 * Funcion que devuelve el nombre del autor
 	 * @return nombre_autor: devuelve el nombre del autor 
 	 */
-	public String getNombre_autor() {
+	public String getNombreAutor() {
 		return nombre_autor;
 	}
 	
@@ -80,7 +83,7 @@ public class Usuario {
 	 * Funcion que devuelve la fecha en la que el usario nacio 
 	 * @return fecha_nacimiento: fecha en la que el usuario nacio
 	 */
-	public LocalDate getFecha_nacimiento() {
+	public LocalDate getFechaNacimiento() {
 		return fecha_nacimiento;
 	}
 	
@@ -88,7 +91,7 @@ public class Usuario {
 	 * Funcion que devuelve la fecha en la que el usuario se regitro
 	 * @return fecha_registro: fecha en la que el usuario se registro en la aplicacion
 	 */
-	public LocalDate getFecha_registro() {
+	public LocalDate getFechaRegistro() {
 		return fecha_registro;
 	}
 	
@@ -104,7 +107,7 @@ public class Usuario {
 	 * Funcion que devuelve la fecha de cuando el usuario se hizo premium
 	 * @return fecha_inicio_pro: indica la fecha en la que el usuario empezo a ser premium 
 	 */
-	public LocalDate getFecha_inicio_pro() {
+	public LocalDate getFechaInicioPro() {
 		return fecha_inicio_pro;
 	}
 	
@@ -124,12 +127,16 @@ public class Usuario {
 		return id;
 	}
 	
+	public ArrayList<Usuario> getSeguidos() {
+		return seguidos;
+	}
+	
 	/**
 	 * Funcion que devuelve un tipo boolean indicando si la cuenta esta en estado bloqueado o no
 	 * @return bloqueado: el status de la cuenta en ese momento, si esta bloqueada o no	 
 	 */
-	public boolean getBloqueado() {
-		return bloqueado;
+	public LocalDate getFechaInicioBloqueado() {
+		return fecha_inicio_bloqueado;
 	}
 	/**
 	 * Funcion que devuelve el numero de reproducciones del usuario
@@ -163,6 +170,7 @@ public class Usuario {
 				return false;
 			else {
 				seguidos.add(x);
+				x.seguidores.add(this);
 				System.out.println("Se ha seguido al usuario correctamente");
 				return true;
 			}
@@ -176,6 +184,7 @@ public class Usuario {
 	public boolean dejarDeSeguirUsuario(Usuario x) {
 		if(seguidos.contains(x)) {
 			seguidos.remove(x);
+			x.seguidores.remove(this);
 			return true;
 		} else {
 			return false;
@@ -201,10 +210,29 @@ public class Usuario {
 	}
 	
 	/**
-	 * Funcion que bloquea la cuenta del usuario modificando los atributos correspondientes
+	 * Funcion que bloquea la cuenta del usuario indefinidamente modificando los atributos correspondientes
 	 */		
-	public void bloquearcuenta() {
-		bloqueado = true;
+	public void bloquearCuentaIndefinido() {
+		bloqueado = enumeracionBloqueado.INDEFINIDO;
 		fecha_inicio_bloqueado = LocalDate.now();
 	}
+	
+	
+	/**
+	 * Funcion que bloquea la cuenta temporalmente del usuario modificando los atributos correspondientes
+	 */
+	public void bloquearCuentaTemporal() {
+		bloqueado = enumeracionBloqueado.TEMPORAL;
+		fecha_inicio_bloqueado = LocalDate.now();
+		
+	}
+	
+	/**
+	 * Funcion que desbloquea la cuenta del usuario modificando los atributos correspondientes
+	 */
+	public void desbloquearCuenta() {
+		bloqueado = enumeracionBloqueado.NOBLOQUEADO;
+		fecha_inicio_bloqueado = null;
+	}
+	
 }

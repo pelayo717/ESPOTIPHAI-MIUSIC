@@ -1,8 +1,9 @@
-package com.ESPOTIPHAI_MUSIC.sistema.usuario;
+package Padsof;
+
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import org.junit.Assert;
+//import org.junit.Assert;
 import org.junit.Before;
 
 class pruebaUsuario {
@@ -22,20 +23,22 @@ class pruebaUsuario {
 	public void testSeguir() {
 		x.seguirUsuario(y);
 		
-		//Como hago assert para comprobar que el se sigue bien al usuario
+		assertEquals(true, x.getSeguidos().contains(y));
 	}
+	
 	@Test
 	public void testDejarDeSeguir() {
 		
 		x.seguirUsuario(y); //Primero seguimos al usuario
 		x.dejarDeSeguirUsuario(y); //Le dejamos de seguir y comprobamos la salida que queda
-		
+		assertEquals(false, x.getSeguidos().contains(y));
 	}
+	
 	@Test
 	public void testSumarReproduccion() {
 		int repro = x.sumarReproduccion(500);
 		
-		assertEquals(repro, 1);
+		assertEquals(1, repro);
 	}
 	
 	@Test
@@ -58,11 +61,6 @@ class pruebaUsuario {
 		x.bloquearcuenta();
 		assertEquals(true, x.getBloqueado());
 	}
-	
-	
-	@Test
-	void test() {
-		fail("Not yet implemented");
-	}
-
 }
+
+
