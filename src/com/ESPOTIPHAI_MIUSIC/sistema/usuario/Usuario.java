@@ -1,13 +1,8 @@
-//package com.ESPOTIPHAI_MUSIC.sistema.usuario;
 package com.ESPOTIPHAI_MIUSIC.sistema.usuario;
-/**
-package SPOTI;
-/**
- * 
- */
 import java.time.LocalDate;
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Album;
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Cancion;
+import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Contenido;
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Lista;
 
 import java.util.ArrayList;
@@ -265,5 +260,99 @@ public class Usuario {
 		bloqueado = enumeracionBloqueado.NOBLOQUEADO;
 		fecha_inicio_bloqueado = null;
 	}
+	
+	/**
+	 * Funcion convierte la cuenta del usuario en premium a traves del pago
+	 */
+	public void mejorarCuentaPorPago() {
+		premium = true;
+		fecha_inicio_pro = LocalDate.now();
+	}
+	
+	/**
+	 * Funcion que añade al album de usuario el contenido pasado como argumento
+	 * @param c: Contenido que se va a añadir al album 
+	 * @return: true si se ha realizado correctamente, false si no
+	 */
+	public boolean anyadirAAlbumPersonal(Contenido c) {
+		if(albumes.contains((Album)c)) {
+			return false; //Ya existe ese album en el array
+		} else {
+			albumes.add((Album)c);
+		}
+		return true; 
+	}
+	
+	/**
+	 * Funcion que añade el contenido a la listas de canciones
+	 * @param c: Contenido que se va a añadir a la listas de canciones 
+	 * @return: true si se ha realizado correctamente, false si no
+	 */
+	public boolean anyadirACancionPersonal(Contenido c) {
+		if(canciones.contains((Cancion)c)) {
+			return false; //Ya esta contenida la cancion
+		} else {
+			canciones.add((Cancion)c);
+		}
+		return true;
+	}
+	
+	
+	/**
+	 * Funcion que va a añadir el contenido a la lista Listas 
+	 * @param c: Contenido que se va a añadir a la lista de Listas  
+	 * @return: true si se ha realizado correctamente, false si no
+	 */
+	public boolean anyadirAListaPersonal(Contenido c) {
+		if(listas.contains((Lista)c)) {
+			return false; //Ya esta esa lista
+		}
+		else {
+			listas.add((Lista)c);
+		}
+		return true;
+	}
+	
+	/**
+	 * Funcion que elimina el contenido de la lista de albumes 
+	 * @param c: Contenido que se va a eliminar al album 
+	 * @return: true si se ha realizado correctamente, false si no
+	 */
+	public boolean eliminarDeAlbumesPersonales(Contenido c) {
+		if(albumes.contains((Album)c)) {
+			albumes.remove((Album)c);
+			return true;
+		} else
+			return false;
+	}
+	
+	
+	/**
+	 * Funcion elimina el contenido pasado de la lista de canciones
+	 * @param c: Contenido que se va a eliminar de la lista de canciones
+	 * @return: true si se ha realizado correctamente, false si no
+	 */
+	public boolean eliminarDeCancionesPersonales(Contenido c) {
+		if(canciones.contains((Cancion)c)) {
+			canciones.remove((Cancion)c);
+			return true;
+		} else
+			return false;
+	}
+	
+	
+	/**
+	 * Funcion que elimina el contenido de la lista de Listas
+	 * @param c: Contenido que se va a eliminar de la listas
+	 * @return: true si se ha realizado correctamente, false si no
+	 */
+	public boolean eliminarDeListasPersonales(Contenido c) {
+		if(listas.contains((Lista)c)) {
+			listas.remove((Lista)c);
+			return true;
+		} else
+			return false;
+	}
+	
 	
 }
