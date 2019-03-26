@@ -11,7 +11,7 @@ public abstract class Contenido  {
 	
 	private Date anyo;
 	private String titulo;
-	private int duracion;
+	private double duracion;
 	private int id;
 	private Usuario autor;
 	
@@ -20,10 +20,10 @@ public abstract class Contenido  {
 	 *	@param estado  estado de la cancion
 	 *	@param reproducible  si la cacion es o no reproducible
 	 */
-	public Contenido(Date anyo, String titulo, int duracion,  int id, Usuario autor ) {
+	public Contenido(Date anyo, String titulo, int id, Usuario autor ) {
 		this.setAutor(autor);
 		this.setAnyo(anyo);
-		this.setDuracion(duracion);
+		this.setDuracion(0);
 		this.setId(id);
 		this.setTitulo(titulo);
 	}
@@ -76,18 +76,18 @@ public abstract class Contenido  {
 
 	/**
 	 *	Getter de duracion
-	 * 	@return duracion del Contenido (int)
+	 * 	@return duracion del Contenido (double)
 	 */
-	public int getDuracion() {
+	public double getDuracion() {
 		return duracion;
 	}
 
 
 	/**
 	 *	Setter de duraccion
-	 *	@param duracion del contenido (int)
+	 *	@param duracion del contenido (double)
 	 */
-	public void setDuracion(int duracion) {
+	public void setDuracion(double duracion) {
 		this.duracion = duracion;
 	}
 

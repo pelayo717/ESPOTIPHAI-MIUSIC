@@ -15,7 +15,7 @@ public class Album extends ContenidoComentable {
 	 *	@param contenido  canciones del album
 	 */
 	public Album (Date anyo, String titulo, int duracion,  int id, Usuario autor, ArrayList<Cancion> contenido) {
-		super(anyo, titulo, duracion, id, autor, new ArrayList<Comentario>());
+		super(anyo, titulo, id, autor, new ArrayList<Comentario>());
 		this.setContenido(contenido);
 		
 	}
