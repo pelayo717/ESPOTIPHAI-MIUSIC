@@ -56,7 +56,7 @@ public class Album extends ContenidoComentable {
 			if(this.contenido.remove(contenido)) {
 				return Status.OK;
 			} else {
-				return Status.OK;
+				return Status.ERROR;
 			}
 		} else {
 			return Status.OK;

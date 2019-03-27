@@ -50,8 +50,16 @@ public class Lista extends Contenido{
 	 *	Funcion para eliminar un contenido de la lista
 	 * 	@return  OK si no hay errores y ERROR de lo contrario
 	 */
-	public Status eliminarContenido() {
-		return Status.OK;
+	public Status eliminarContenido(Contenido contenido) {
+		if(this.contenido.contains(contenido)) {
+			if(this.contenido.remove(contenido)) {
+				return Status.OK;
+			} else {
+				return Status.ERROR;
+			}
+		} else {
+			return Status.OK;
+		}
 	}
 
 	

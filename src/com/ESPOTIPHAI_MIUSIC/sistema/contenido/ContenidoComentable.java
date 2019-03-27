@@ -21,8 +21,12 @@ public abstract class ContenidoComentable extends Contenido {
 	 *	Funcion para añadir un comentario al contenido comentable
 	 * 	@return  OK si no hay errores y ERROR de lo contrario
 	 */
-	public Status comentario() {
-		return Status.OK;
+	public Status anyadirComentario(Comentario comentario) {
+		if (this.comentarios.add(comentario)) {
+			return Status.OK;
+		} else {
+			return Status.ERROR;
+		}
 	}
 
 
