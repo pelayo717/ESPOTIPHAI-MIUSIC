@@ -2,7 +2,6 @@ package com.ESPOTIPHAI_MIUSIC.sistema.usuario;
 import java.time.LocalDate;
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Album;
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Cancion;
-import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Contenido;
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Lista;
 
 import java.util.ArrayList;
@@ -274,11 +273,11 @@ public class Usuario {
 	 * @param c: Contenido que se va a añadir al album 
 	 * @return: true si se ha realizado correctamente, false si no
 	 */
-	public boolean anyadirAAlbumPersonal(Contenido c) {
-		if(albumes.contains((Album)c)) {
+	public boolean anyadirAAlbumPersonal(Album c) {
+		if(albumes.contains(c)) {
 			return false; //Ya existe ese album en el array
 		} else {
-			albumes.add((Album)c);
+			albumes.add(c);
 		}
 		return true; 
 	}
@@ -288,11 +287,11 @@ public class Usuario {
 	 * @param c: Contenido que se va a añadir a la listas de canciones 
 	 * @return: true si se ha realizado correctamente, false si no
 	 */
-	public boolean anyadirACancionPersonal(Contenido c) {
-		if(canciones.contains((Cancion)c)) {
+	public boolean anyadirACancionPersonal(Cancion c) {
+		if(canciones.contains(c)) {
 			return false; //Ya esta contenida la cancion
 		} else {
-			canciones.add((Cancion)c);
+			canciones.add(c);
 		}
 		return true;
 	}
@@ -303,12 +302,12 @@ public class Usuario {
 	 * @param c: Contenido que se va a añadir a la lista de Listas  
 	 * @return: true si se ha realizado correctamente, false si no
 	 */
-	public boolean anyadirAListaPersonal(Contenido c) {
-		if(listas.contains((Lista)c)) {
+	public boolean anyadirAListaPersonal(Lista c) {
+		if(listas.contains(c)) {
 			return false; //Ya esta esa lista
 		}
 		else {
-			listas.add((Lista)c);
+			listas.add(c);
 		}
 		return true;
 	}
@@ -318,9 +317,9 @@ public class Usuario {
 	 * @param c: Contenido que se va a eliminar al album 
 	 * @return: true si se ha realizado correctamente, false si no
 	 */
-	public boolean eliminarDeAlbumesPersonales(Contenido c) {
-		if(albumes.contains((Album)c)) {
-			albumes.remove((Album)c);
+	public boolean eliminarDeAlbumesPersonales(Album c) {
+		if(albumes.contains(c)) {
+			albumes.remove(c);
 			return true;
 		} else
 			return false;
@@ -332,9 +331,9 @@ public class Usuario {
 	 * @param c: Contenido que se va a eliminar de la lista de canciones
 	 * @return: true si se ha realizado correctamente, false si no
 	 */
-	public boolean eliminarDeCancionesPersonales(Contenido c) {
-		if(canciones.contains((Cancion)c)) {
-			canciones.remove((Cancion)c);
+	public boolean eliminarDeCancionesPersonales(Cancion c) {
+		if(canciones.contains(c)) {
+			canciones.remove(c);
 			return true;
 		} else
 			return false;
@@ -346,9 +345,9 @@ public class Usuario {
 	 * @param c: Contenido que se va a eliminar de la listas
 	 * @return: true si se ha realizado correctamente, false si no
 	 */
-	public boolean eliminarDeListasPersonales(Contenido c) {
-		if(listas.contains((Lista)c)) {
-			listas.remove((Lista)c);
+	public boolean eliminarDeListasPersonales(Lista c) {
+		if(listas.contains(c)) {
+			listas.remove(c);
 			return true;
 		} else
 			return false;
