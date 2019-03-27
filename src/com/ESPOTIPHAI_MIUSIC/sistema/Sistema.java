@@ -48,6 +48,7 @@ public class Sistema implements java.io.Serializable{
 	private static Sistema sistema = null;
 	private int umbral_reproducciones=30;
 	private double precio_premium=9.99;
+	private int max_reproducciones_usuarios_no_premium = 8; //Recordemos que son los premium los unicos que pueden reproducir de manera indefinida
 	
 	
 	public static Sistema getSistema() throws FileNotFoundException, Mp3PlayerException {
@@ -72,6 +73,7 @@ public class Sistema implements java.io.Serializable{
 			sistema.administrador = null;
 			sistema.usuario_actual = null;
 			sistema.usuarios_totales.add(new Usuario("root1967","ADMINISTRADOR",null,"ADMINISTRADOR",-1));
+			
 		}else {
 			cargarDatosGenerales();
 		}
@@ -328,23 +330,24 @@ public class Sistema implements java.io.Serializable{
 	//---------------------CONTENIDO------------------------------------
 
 	//**SUBIR_CANCION
-	public boolean crearCancion(Date anyo,String titulo,String nombreMP3) throws FileNotFoundException, Mp3PlayerException{
+	public Status crearCancion(Date anyo,String titulo,String nombreMP3) throws FileNotFoundException, Mp3PlayerException{
 		boolean cancion_repetida_en_usuario = false; 
 		
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
-			Cancion c = new Cancion(anyo,titulo,-1,sistema.usuario_actual,nombreMP3);
+			Cancion c = new Cancion(anyo,titulo,sistema.usuario_actual,nombreMP3);
 			for(Cancion cancion:sistema.usuario_actual.getCanciones()) {
 				if(cancion.getTitulo().equals(titulo) == true && cancion.getNombreMP3().equals(nombreMP3) == true) {
 					cancion_repetida_en_usuario = true;
 				}
 			}
 			if(cancion_repetida_en_usuario == true) {
-				return false;
+				return Status.ERROR;
 			}else {
-				return sistema.usuario_actual.aniadirCancionPersonal(c);
+				sistema.usuario_actual.aniadirCancionPersonal(c);
+				return Status.OK;
 			}
 		}else {
-			return false;
+			return Status.ERROR;
 		}
 		
 	}
@@ -359,7 +362,6 @@ public class Sistema implements java.io.Serializable{
 					existe_cancion_en_usuario = true;
 				}
 			}
-			
 			if(existe_cancion_en_usuario == true) { //SE PUEDE ELIMINAR DEL ARRAY DE CANCIONES PERSONALES
 				sistema.usuario_actual.eliminarDeCancionesPersonales(cancion_eliminar);
 				return;
@@ -370,11 +372,11 @@ public class Sistema implements java.io.Serializable{
 	}
 	
 	//**CREAR_ALBUM
-	public boolean crearAlbum(Date anyo,String titulo,int id,Usuario autor,ArrayList<Cancion> contenido) {
+	public Status crearAlbum(Date anyo,String titulo,int id,ArrayList<Cancion> contenido) {
 		boolean album_repetido_en_usuario = false; 
 		
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
-			Album a = new Album(anyo,titulo,0,-1,sistema.usuario_actual,new ArrayList<Cancion>());
+			Album a = new Album(anyo,titulo,0,sistema.usuario_actual,new ArrayList<Cancion>());
 			for(Album album:sistema.usuario_actual.getAlbumes()) {
 				if(album.getTitulo().equals(titulo)== true) {
 					album_repetido_en_usuario = true;
@@ -382,12 +384,14 @@ public class Sistema implements java.io.Serializable{
 			}
 			
 			if(album_repetido_en_usuario  == true) {
-				return false;
+				return Status.ERROR;
 			}else {
-				return sistema.usuario_actual.aniadirAlbumPersonal(a);
+				sistema.usuario_actual.aniadirAlbumPersonal(a);
+				sistema.albumes_totales.add(a);
+				return Status.OK;
 			}
 		}else {
-			return false;
+			return Status.ERROR;
 		}
 	
 	}
@@ -406,6 +410,8 @@ public class Sistema implements java.io.Serializable{
 			if(existe_album_en_usuario == true) { //SE PUEDE ELIMINAR DEL ARRAY DE CANCIONES PERSONALES
 				sistema.usuario_actual.eliminarDeAlbumesPersonales(album_eliminar);
 				return;
+			}else {
+				return;
 			}
 		}else {
 			return;
@@ -414,30 +420,27 @@ public class Sistema implements java.io.Serializable{
 	
 	//**ANIADIR_A_ALBUM
 	public Status aniadirAAlbum(Album a, Cancion c) {
-		boolean existe_cancion = false;
-		boolean cancion_contenida_en_album = false;
-		
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
-			for(Cancion cancion:sistema.usuario_actual.getCanciones()) { //COMPROBAMOS QUE ES DEL USUARIO
-				if(cancion.getTitulo().equals(c.getTitulo()) == true && cancion.getNombreMP3().equals(c.getNombreMP3()) == true) {
-					existe_cancion = true;
-				}
-			}
-			
-			if(existe_cancion == true) {
-				
-				ArrayList<Cancion> canciones_album = a.getContenido();
-				for(Cancion cancion_a:canciones_album) {
-					if(cancion_a.getTitulo().equals(c.getTitulo()) == true && cancion_a.getNombreMP3().equals(c.getNombreMP3()) == true) {
-						cancion_contenida_en_album = true;
+			if(c.getEstado() == EstadoCancion.Valida || c.getEstado() == EstadoCancion.Explicita) {
+			if(sistema.usuario_actual.getCanciones().contains(c) == true) {
+				if(sistema.usuario_actual.getAlbumes().contains(a) == true) {
+					ArrayList<Cancion> canciones_en_albumes = a.getContenido();
+					if(canciones_en_albumes.contains(c) != true) { //NO ESTA EN EL ALBUM Y SE PROCEDE A AÑADIR
+						a.anyadirContenido(c);
+						/*if(sistema.albumes_totales.contains(a) != true) {
+							sistema.albumes_totales.add(a);
+						}*/
+						return Status.OK;
+		
+					}else {
+						return Status.ERROR;
 					}
-				}
-				
-				if(cancion_contenida_en_album == true) {
-					return Status.ERROR;
 				}else {
-					return a.anyadirContenido(c);
+					return Status.ERROR;
 				}
+			}else {
+				return Status.ERROR;
+			}
 			}else {
 				return Status.ERROR;
 			}
@@ -448,28 +451,21 @@ public class Sistema implements java.io.Serializable{
 	
 	//**QUITAR_DE_ALBUM
 	public void quitarDeAlbum(Album a, Cancion c) {
-		boolean existe_cancion = false;
-		int x=0;
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
-			for(Cancion cancion:sistema.usuario_actual.getCanciones()) { //COMPROBAMOS QUE ES DEL USUARIO
-				if(cancion.getTitulo().equals(c.getTitulo()) == true && cancion.getNombreMP3().equals(c.getNombreMP3()) == true) {
-					existe_cancion = true;
-				}
-			}
-			
-			if(existe_cancion == true) {
-				ArrayList<Cancion> canciones_album = a.getContenido();
-				for(Cancion cancion_a:canciones_album) {
-					if(cancion_a.getTitulo().equals(c.getTitulo()) == true && cancion_a.getNombreMP3().equals(c.getNombreMP3()) == true) {
-						break;
+			if(c.getEstado() == EstadoCancion.Valida || c.getEstado() == EstadoCancion.Explicita) {
+				if(sistema.usuario_actual.getCanciones().contains(c) == true) {
+					if(sistema.usuario_actual.getAlbumes().contains(a) == true) {
+						ArrayList<Cancion> canciones_en_albumes = a.getContenido();
+							if(canciones_en_albumes.contains(c) == true) { //NO ESTA EN EL ALBUM Y SE PROCEDE A AÑADIR
+								a.eliminarContenido(c);
+								return;
+							}else {
+								return;
+							}
+					}else{
+						return;
 					}
-					x=x+1; //PARA CONOCER POSICION EN ARRAY
-				}
-				
-				if(x == canciones_album.size() - 1) { //NO ESTA EN EL ALBUM
-					return;
 				}else {
-					a.getContenido().remove(x);
 					return;
 				}
 			}else {
@@ -481,12 +477,12 @@ public class Sistema implements java.io.Serializable{
 	}
 	
 	//**CREAR_LISTA
-	public boolean crearLista(Date anyo, String titulo,int id, Usuario autor, ArrayList<Contenido> contenido) {
+	public Status crearLista(Date anyo, String titulo,int id, Usuario autor, ArrayList<Contenido> contenido) {
 		
 		boolean lista_repetida_en_usuario = false; 
 		
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
-			Lista l = new Lista(anyo,titulo,-1,sistema.usuario_actual,new ArrayList<Contenido>());
+			Lista l = new Lista(anyo,titulo,sistema.usuario_actual,new ArrayList<Contenido>());
 			for(Lista lista:sistema.usuario_actual.getListas()) {
 				if(lista.getTitulo().equals(titulo) == true) {
 					lista_repetida_en_usuario = true;
@@ -494,17 +490,18 @@ public class Sistema implements java.io.Serializable{
 			}
 			
 			if(lista_repetida_en_usuario == true) {
-				return false;
+				return Status.ERROR;
 			}else {
-				return sistema.usuario_actual.aniadirListaPersonal(l);
+				sistema.usuario_actual.aniadirListaPersonal(l);
+				return Status.OK;
 			}
 		}else {
-			return false;
+			return Status.ERROR;
 		}
 	}
 	
 	//**BORAR_LISTA
-	public void aliminarLista(Lista lista_eliminar) {
+	public void eliminarLista(Lista lista_eliminar) {
 		boolean existe_lista_en_usuario = false;
 		
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
@@ -524,7 +521,13 @@ public class Sistema implements java.io.Serializable{
 	}
 	
 	//**ANIADIR_A_LISTA
+	public Status aniadirALista(Lista l, Contenido c) {
+		return Status.ERROR;
+	}
 	//**QUITAR_DE_LISTA
+	public void quitarDeLista(Lista l,Contenido c) {
+		return;
+	}
 	
 	//---------------------ADMINISTRADOR------------------------------------
 	
@@ -559,7 +562,7 @@ public class Sistema implements java.io.Serializable{
 		LocalDate fecha_actual = LocalDate.now();
 		for(Usuario usuario: this.sistema.usuarios_totales) {
 			LocalDate fecha_inicio_bloqueado = usuario.getFechaInicioBloqueado();
-			if(fecha_actual.minusDays(30).equals(fecha_inicio_bloqueado) == true && usuario.getBloqueado() == EstadoBloqueado.INDEFINIDO.TEMPORAL) {
+			if(fecha_actual.minusDays(30).equals(fecha_inicio_bloqueado) == true && usuario.getEstadoBloqueado() == enumeracionBloqueado.INDEFINIDO.TEMPORAL) {
 				usuario.desbloquearCuenta();
 			}
 		}
@@ -608,12 +611,66 @@ public class Sistema implements java.io.Serializable{
 	
 	
 	
-	//**REPRODUCIR PARA USUARIOS DISTINTOS
+	//**----------REPRODUCCIONES__CONCRETAS----------------
+	
+	public void reproducirCancion(Cancion c) {
+		c.reproducir();
+	}
+	
+	public void reproducirAlbum_Premium_Aleatoria(Album a) {
+		int x=0;
+		ArrayList<int[]> valores_aleatorios= new ArrayList<int[]>();
+		if(sistema.usuario_actual.getPremium() == true) {
+			ArrayList<Cancion> canciones_en_album = (ArrayList<Cancion>) a.getContenido();
+			for(x=0; x < canciones_en_album.size(); x++) {
+				int value = (int) (Math.random() * canciones_en_album.size());
+			
+				
+			}
+		}
+		return;
+	}
+	
+	public void reproducirAlbum_Premium_Todas(Album a) {
+		if(sistema.usuario_actual.getPremium() == true) {
+			ArrayList<Cancion> canciones_en_album = (ArrayList<Cancion>) a.getContenido();
+			for(Cancion cancion:canciones_en_album) {
+				cancion.aniadirCola();
+			}
+			for(Cancion cancion:canciones_en_album) {
+				cancion.reproducir();
+				//HILO DE DORMIR
+			}
+		}
+	}
+	
+	/*public void reproducirAlbum_NoPremium(Album a, ) {
+		
+	}*/
+	
+	
+	//**-------------REPRODUCCIONES__GENERALES------------
+	
+	
 	
 	//**PARAR PARA USUARIOS DISTINTOS
 	
-	//**VALIDAR_CANCION
-	
-	//** + FUNCIONES DE ADMINISTRADOR
+		//**VALIDAR_CANCION
+		
+		//** + FUNCIONES DE ADMINISTRADOR
 
+	
+	/*public static void main(String args[]) throws FileNotFoundException, Mp3PlayerException, InterruptedException {
+		Date d = new Date();
+		Cancion c = new Cancion(d,"chicle",1,null,"chicle3.mp3");
+		
+		System.out.println(c.getNombreMP3() + "sss");
+		c.anyadirCola(c.getNombreMP3());
+		c.reproducirCancion();
+		Thread.sleep(10000);
+	}*/
+	
 }
+
+
+
