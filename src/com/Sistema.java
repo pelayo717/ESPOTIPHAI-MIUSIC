@@ -334,7 +334,7 @@ public class Sistema implements java.io.Serializable{
 		boolean cancion_repetida_en_usuario = false; 
 		
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
-			Cancion c = new Cancion(anyo,titulo,devolverDuracion(nombreMP3),sistema.usuario_actual,nombreMP3);
+			Cancion c = new Cancion(anyo,titulo,sistema.usuario_actual,nombreMP3);
 			for(Cancion cancion:sistema.usuario_actual.getCanciones()) {
 				if(cancion.getTitulo().equals(titulo) == true && cancion.getNombreMP3().equals(nombreMP3) == true) {
 					cancion_repetida_en_usuario = true;
@@ -615,6 +615,8 @@ public class Sistema implements java.io.Serializable{
 	
 	public void reproducirCancion(Cancion c) {
 		c.reproducir();
+		Usuario autor = c.getAutor();
+		autor.sumarReproduccion(sistema.getUmbralReproducciones());
 	}
 	
 	public void reproducirAlbum_Premium_Aleatoria(Album a) {
@@ -639,6 +641,7 @@ public class Sistema implements java.io.Serializable{
 			}
 			for(Cancion cancion:canciones_en_album) {
 				cancion.reproducir();
+				//HILO DE DORMIR
 			}
 		}
 	}
@@ -668,6 +671,20 @@ public class Sistema implements java.io.Serializable{
 		c.reproducirCancion();
 		Thread.sleep(10000);
 	}*/
+	
+	public static void main(String args[]) throws FileNotFoundException, Mp3PlayerException, InterruptedException {
+		Date d = new Date();
+		
+		Cancion c = new Cancion(d,"pajaritos",null,"chicle3.mp3");
+		c.aniadirCola();
+		c.reproducir();
+		Thread.sleep(5000);
+		c.parar();
+		
+		Cancion c1 = new Cancion(d,"invalid",null,"np.mp3");
+		c1.aniadirCola();
+		c1.reproducir();
+	}
 	
 }
 
