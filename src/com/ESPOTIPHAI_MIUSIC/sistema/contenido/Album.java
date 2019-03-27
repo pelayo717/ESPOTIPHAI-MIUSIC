@@ -24,14 +24,14 @@ public class Album extends ContenidoComentable {
 	}
 	/**
 	 *	Funcion para calcular el tiempo que dura el album
-	 * 	@return  OK si no hay errores y ERROR de lo contrario
+	 * 	@return  duracion la suma de las duraciones de sus contenidos
 	 */
 	public double calcularTiempo() {
-		double aux = 0;
+		double duracion = 0;
 		for(Cancion cancion: contenido) {
-			aux += cancion.getDuracion();
+			duracion += cancion.getDuracion();
 		}
-		return aux;
+		return duracion;
 	}
 	
 	/**

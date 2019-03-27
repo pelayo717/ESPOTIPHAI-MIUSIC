@@ -9,22 +9,29 @@ import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
  */
 public class Lista extends Contenido{
 	
-	private ArrayList<Contenido> contenido = new ArrayList<Contenido>();
+	private ArrayList<Contenido> contenidos = new ArrayList<Contenido>();
 	
 	public Lista(Date anyo, String titulo,Usuario autor, ArrayList<Contenido> contenido) {
 		super(anyo, titulo,autor);
 		this.setContenido(contenido);
+		this.setDuracion(this.calcularTiempo());
+
 	}
 
 
 
 	/**
 	 *	Funcion para calcular el tiempo que dura la lista
-	 * 	@return  OK si no hay errores y ERROR de lo contrario
+	 * 	@return  duracion la suma de las duraciones de sus contenidos
 	 */
-	public Status calcularTiempo() {
-		return Status.OK;
+	public double calcularTiempo() {
+		double duracion = 0;
+		for(Contenido contenido: contenidos) {
+			duracion += contenido.getDuracion();
+		}
+		return duracion;
 	}
+	
 	
 	/**
 	 *	Funcion para anyadir contenido a la lista

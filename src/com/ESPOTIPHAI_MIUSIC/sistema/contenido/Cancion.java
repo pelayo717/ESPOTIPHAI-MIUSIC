@@ -7,11 +7,6 @@ import java.util.*;
 import com.ESPOTIPHAI_MIUSIC.sistema.status.Status;
 import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
 
-
-import pads.musicPlayer.Mp3Player;
-import pads.musicPlayer.exceptions.Mp3InvalidFileException;
-import pads.musicPlayer.exceptions.Mp3PlayerException;
-
 /**
  *	Clase Cancion con herencia de ContenidoComentable
  */
@@ -28,41 +23,14 @@ public class Cancion extends ContenidoComentable {
 	 *	@param estado  estado de la cancion
 	 *	@param reproducible  si la cacion es o no reproducible
 	 */
-	public Cancion(Date anyo, String titulo, Usuario autor,  String nombreMP3){
+	public Cancion(Date anyo, String titulo, double duracion, Usuario autor,  String nombreMP3){
 		super(anyo, titulo, autor, new ArrayList<Comentario>());
 		this.setNum_reprod(num_reprod);
-		this.setDuracion(this.devolverDuracion(nombreMP3));
+		this.setDuracion(duracion);
 		this.setNombreMP3(nombreMP3);
 		this.setEstado(EstadoCancion.PendienteAprobacion);
 	}
 	
-	/**
-	 *	Funcion para saber si es tipo MP3 o no
-	 *	@param cancion string de la cancion
-	 *	return true si es de tipo MP3 y false de lo contrario
-	 */
-	public boolean esMP3(String cancion) {
-		if(Mp3Player.isValidMp3File(cancion) == true) {
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 *	Funcion de MP3 para devolver la duracion de la cancion
-	 *	@param cancion string de la cancion
-	 *	return double de la duracion de la cancion
-	 */
-	public double devolverDuracion(String cancion) {
-		try {
-			double duracion = Mp3Player.getDuration(cancion);
-			return duracion;
-		}catch(FileNotFoundException fe) {
-			System.out.println("Error file not found");
-			fe.toString();
-			return -1.0;
-		}
-	}
 	
 	
 
