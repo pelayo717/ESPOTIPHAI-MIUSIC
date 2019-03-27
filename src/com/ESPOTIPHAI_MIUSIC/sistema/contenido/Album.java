@@ -1,4 +1,6 @@
 package com.ESPOTIPHAI_MIUSIC.sistema.contenido;
+
+
 import java.util.*;
 
 import com.ESPOTIPHAI_MIUSIC.sistema.status.Status;
@@ -14,17 +16,22 @@ public class Album extends ContenidoComentable {
 	 *	Constructor de Album con herencia de ContenidoComentable
 	 *	@param contenido  canciones del album
 	 */
-	public Album (Date anyo, String titulo, int duracion,  int id, Usuario autor, ArrayList<Cancion> contenido) {
-		super(anyo, titulo, id, autor, new ArrayList<Comentario>());
+	public Album (Date anyo, String titulo,  Usuario autor, ArrayList<Cancion> contenido) {
+		super(anyo, titulo, autor, new ArrayList<Comentario>());
 		this.setContenido(contenido);
+		this.setDuracion(this.calcularTiempo());
 		
 	}
 	/**
 	 *	Funcion para calcular el tiempo que dura el album
 	 * 	@return  OK si no hay errores y ERROR de lo contrario
 	 */
-	public Status calcularTiempo() {
-		return Status.OK;
+	public double calcularTiempo() {
+		double aux = 0;
+		for(Cancion cancion: contenido) {
+			aux += cancion.getDuracion();
+		}
+		return aux;
 	}
 	
 	/**

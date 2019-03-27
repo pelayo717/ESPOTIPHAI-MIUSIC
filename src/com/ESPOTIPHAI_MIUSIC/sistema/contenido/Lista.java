@@ -11,8 +11,8 @@ public class Lista extends Contenido{
 	
 	private ArrayList<Contenido> contenido = new ArrayList<Contenido>();
 	
-	public Lista(Date anyo, String titulo, int id, Usuario autor, ArrayList<Contenido> contenido) {
-		super(anyo, titulo, id, autor);
+	public Lista(Date anyo, String titulo,Usuario autor, ArrayList<Contenido> contenido) {
+		super(anyo, titulo,autor);
 		this.setContenido(contenido);
 	}
 

@@ -8,7 +8,7 @@ import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
  *	Clase Contenido
  */
 public abstract class Contenido  {
-	
+	private static int nextID = 0;
 	private Date anyo;
 	private String titulo;
 	private double duracion;
@@ -20,11 +20,11 @@ public abstract class Contenido  {
 	 *	@param estado  estado de la cancion
 	 *	@param reproducible  si la cacion es o no reproducible
 	 */
-	public Contenido(Date anyo, String titulo, int id, Usuario autor ) {
+	public Contenido(Date anyo, String titulo, Usuario autor ) {
 		this.setAutor(autor);
 		this.setAnyo(anyo);
 		this.setDuracion(0);
-		this.setId(id);
+		this.setId(nextID++);
 		this.setTitulo(titulo);
 	}
 	

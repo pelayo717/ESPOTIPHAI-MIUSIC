@@ -15,11 +15,12 @@ import pads.musicPlayer.exceptions.Mp3PlayerException;
 /**
  *	Clase Cancion con herencia de ContenidoComentable
  */
+
+
 public class Cancion extends ContenidoComentable {
 	private EstadoCancion estado;
 	private String nombreMP3; 
 	private int num_reprod;
-	private Mp3Player repro_mp3;
 
 	
 	/**
@@ -27,52 +28,12 @@ public class Cancion extends ContenidoComentable {
 	 *	@param estado  estado de la cancion
 	 *	@param reproducible  si la cacion es o no reproducible
 	 */
-	public Cancion(Date anyo, String titulo, int id, Usuario autor,  String nombreMP3)  throws FileNotFoundException, Mp3PlayerException {
-		super(anyo, titulo, id, autor, new ArrayList<Comentario>());
+	public Cancion(Date anyo, String titulo, Usuario autor,  String nombreMP3){
+		super(anyo, titulo, autor, new ArrayList<Comentario>());
 		this.setNum_reprod(num_reprod);
 		this.setDuracion(this.devolverDuracion(nombreMP3));
 		this.setNombreMP3(nombreMP3);
 		this.setEstado(EstadoCancion.PendienteAprobacion);
-		this.repro_mp3 = new Mp3Player();
-	}
-	
-	
-	
-	/**
-	 *	Funcion para anyadir a la cola de reproduccion
-	 *	@param cancion_a_anyadir  string de la cancion a anyadir
-	 */
-	public void anyadirCola(String cancion_a_anyadir) {
-		try {
-			this.repro_mp3.add(cancion_a_anyadir);
-			return;
-		}catch(Mp3InvalidFileException ie) {
-			System.out.println("Error add file");
-			ie.toString();
-			return;
-		}
-	}
-	
-	/**
-	 *	Funcion para reproducir una cancion
-	 */
-	public void reproducirCancion() {
-		try {
-			this.repro_mp3.play();
-			return;
-		}catch(Mp3PlayerException pe) {
-			System.out.println("Error play song");
-			pe.toString();
-			return;
-		}
-	}
-	
-	
-	/**
-	 *	Funcion para parar una cancion
-	 */
-	public void pararCancion() {
-			this.repro_mp3.stop();
 	}
 	
 	/**
