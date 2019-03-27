@@ -20,7 +20,7 @@ public class Usuario {
 	private LocalDate fecha_registro;
 	private String contrasena;
 	private LocalDate fecha_inicio_pro;
-	private Boolean premium;
+	private boolean premium;
 	private Integer numero_repro;
 	private enumeracionBloqueado bloqueado;
 	private LocalDate fecha_inicio_bloqueado;
@@ -111,7 +111,7 @@ public class Usuario {
 	 * Funcion que devuelve un boolean indicando si es premium o no 
 	 * @return premium: boolean que indica si el usuario es prrmium o no 
 	 */
-	public Boolean getPremium() {
+	public boolean getPremium() {
 		return premium;
 	}
 	
@@ -190,7 +190,7 @@ public class Usuario {
 	 * @param x: Usuario al que queremos seguir
 	 * @return true si se ejecuta correctamente, false si hay algun error
 	 */
-	public Boolean seguirUsuario(Usuario x) { 
+	public boolean seguirUsuario(Usuario x) { 
 			if(seguidos.contains(x)) //Ya se sigue al usuario
 				return false;
 			else {
