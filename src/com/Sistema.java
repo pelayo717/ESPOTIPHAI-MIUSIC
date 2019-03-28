@@ -2,6 +2,7 @@ package com.ESPOTIPHAI_MIUSIC.sistema;
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Album;
 
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Cancion;
+import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Comentario;
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Contenido;
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.EstadoCancion;
 import com.ESPOTIPHAI_MIUSIC.sistema.contenido.Lista;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.LocalDate;
+import java.time.Period;
 
 /**
  * La clase sistema es la encargada de trabajar con objetos de la clase Contenido que permite reproducirlos, pararlos asi como comentarlos y otras m�ltiples funcionalidades. Por otra parte
@@ -43,8 +45,8 @@ public class Sistema implements java.io.Serializable{
 	private ArrayList<Usuario> usuarios_totales;
 	private ArrayList<Cancion> canciones_totales;
 	private ArrayList<Album> albumes_totales;
-	private Usuario administrador;
 	private Usuario usuario_actual;
+	private boolean es_administrador;
 	private static Sistema sistema = null;
 	private int umbral_reproducciones=30;
 	private double precio_premium=9.99;
@@ -70,29 +72,44 @@ public class Sistema implements java.io.Serializable{
 			sistema.usuarios_totales = new ArrayList<Usuario>();
 			sistema.canciones_totales = new ArrayList<Cancion>();
 			sistema.albumes_totales = new ArrayList<Album>();
-			sistema.administrador = null;
+			sistema.es_administrador = false;
 			sistema.usuario_actual = null;
-			sistema.usuarios_totales.add(new Usuario("root1967","ADMINISTRADOR",null,"ADMINISTRADOR",-1));
-			
+			sistema.usuarios_totales.add(new Usuario("root1967","ADMINISTRADOR",LocalDate.of(1968, 12, 27),"ADMINISTRADOR",-1));
+			sistema.umbral_reproducciones = 30;
+			sistema.precio_premium = 9.9;
+			sistema.max_reproducciones_usuarios_no_premium = 8;
 		}else {
-			cargarDatosGenerales();
+			this.cargarDatosGenerales();
+			this.empeorarCuentaPrincipal();
+			this.desbloquearUsuario();
 		}
 		
-		this.empeorarCuentaPrincipal();
-		this.desbloquearUsuario();
 	}
-	//----------------SETTERS------------------//
 	
-	public void setUmbralReproducciones(int umbral) {
+	public Status setUmbralReproducciones(int umbral) {
+		if(umbral < 0) {
+			return Status.ERROR;
+		}
 		sistema.umbral_reproducciones = umbral;
+		return Status.OK;
 	}
 	
-	public void setPrecioPremium(double precio) {
+	public Status setPrecioPremium(double precio) {
+		if(precio < 0.0) {
+			return Status.ERROR;
+		}
 		sistema.precio_premium = precio;
+		return Status.OK;
 	}
 	
-	//----------------GETTERS------------------//
-	
+	public Status setMaxReproduccionesUsuarioNoPremium(int x) {
+		if(x < 0) {
+			return Status.ERROR;
+		}
+		sistema.max_reproducciones_usuarios_no_premium = x;
+		return Status.OK;
+	}
+
 	public ArrayList<Usuario> getUsuariosTotales(){
 		return sistema.usuarios_totales;
 	}
@@ -103,10 +120,6 @@ public class Sistema implements java.io.Serializable{
 	
 	public ArrayList<Album> getAlbumTotales(){
 		return sistema.albumes_totales;
-	}
-	
-	public Usuario getAdministrador() {
-		return (Usuario) sistema.administrador;
 	}
 	
 	public Usuario getUsuarioActual() {
@@ -121,14 +134,12 @@ public class Sistema implements java.io.Serializable{
 		return sistema.precio_premium;
 	}
 	
-	//----------------USUARIO--------------------//
-	
-	public boolean registrarse(String nombre_usuario,String nombre_autor,LocalDate fecha_nacimiento, String contrasenia) {
+	public Status registrarse(String nombre_usuario,String nombre_autor,LocalDate fecha_nacimiento, String contrasenia) {
 		
 		int i=0;
 		
 		if(nombre_usuario == null || contrasenia == null || fecha_nacimiento == null) {
-			return false;
+			return Status.ERROR;
 		}
 		
 		for(Usuario usuario: sistema.usuarios_totales) {
@@ -139,104 +150,146 @@ public class Sistema implements java.io.Serializable{
 		}
 		
 		if(i < sistema.usuarios_totales.size()) {
-			return false;
+			return Status.ERROR;
 		}		
 		
 		Usuario usuario_registrado_nuevo = new Usuario(nombre_usuario,nombre_autor,fecha_nacimiento, contrasenia,sistema.usuarios_totales.size()+1); 
 		sistema.usuarios_totales.add(usuario_registrado_nuevo);
-		return true;
+		return Status.OK;
 	}
 	
-	public boolean iniciarSesion(String nombre_usuario, String contrasenia) {
+	public Status iniciarSesion(String nombre_usuario, String contrasenia) {
 
 		if(nombre_usuario == null || contrasenia == null) {
-			return false;
+			return Status.ERROR;
 		}
 			
 		for(Usuario usuario: sistema.usuarios_totales) {
 			if(usuario.getNombreUsuario().equals("root1967") == true && usuario.getContrasena().equals("ADMINISTRADOR")) {
-				sistema.administrador = usuario;
-				return true;
+				sistema.usuario_actual = usuario;
+				sistema.es_administrador = true;
+				return Status.OK;
 			}
 			
 			if(usuario.getNombreUsuario().equals(nombre_usuario) == true && usuario.getContrasena().equals(contrasenia) == true) {
 				sistema.usuario_actual = usuario;
-				return true;
+				return Status.OK;
 			}
 		}
 			
-		return false;
+		return Status.ERROR;
 	}
 	
-	public boolean cerrarSesion() {
+	public Status cerrarSesion() {
 		if(sistema.usuario_actual != null) {
 			sistema.usuario_actual = null;
-			return true;
+			return Status.OK;
 		}
-		return false;
+		return Status.ERROR;
 	}
 	
-	//TARJETA FALTA
-	public boolean mejorarCuentaPago(String numero_tarjeta){
+	public Status mejorarCuentaPago(String numero_tarjeta){
 		try {
 			TeleChargeAndPaySystem.charge(numero_tarjeta, "Mejora de la cuenta a estado PREMIUM", sistema.getPrecioPremium());
 			sistema.usuario_actual.mejorarCuentaPorPago();
-			return true;
+			return Status.OK;
 		}catch(FailedInternetConnectionException fe) {
 			fe = new FailedInternetConnectionException(numero_tarjeta);
 			fe.toString();
-			return false;
+			return Status.ERROR;
 		}catch(InvalidCardNumberException ie) {
 			ie = new InvalidCardNumberException(numero_tarjeta);
 			ie.toString();
-			return false;
+			return Status.ERROR;
 		}catch(OrderRejectedException re) {
 			re.toString();
-			return false;
+			return Status.ERROR;
 		}
 	}
 	
-	
-	//-----------------------CONTENIDO-----------------------------------
-	
-	//**BUSQUEDA SIEMPRE BUSCAMOS POR UN STRING
 	@SuppressWarnings("unlikely-arg-type")
 	public ArrayList<Cancion> buscadorPorTitulos(String palabra) {
+		LocalDate fecha_actual = LocalDate.now();
 		
 		if(palabra == null) {
 			return null;
 		}
 		
-		//TITULO ==> BUSCAMOS POR CANCIONES Y PONEMOS UNICAMENTE OBJETOS DE ESTE TIPO
-		ArrayList<Cancion> lista_filtrada = new ArrayList<Cancion>();
-		for(Cancion cancion: sistema.canciones_totales) {
-			if(cancion.getTitulo().contains(palabra) == true || cancion.getTitulo().equals(palabra) == true) {
-				lista_filtrada.add(cancion);
+		if(sistema.usuario_actual != null) {
+			Period intervalo = Period.between(sistema.usuario_actual.getFechaNacimiento(), fecha_actual);
+			if(intervalo.getYears() >= 18) {
+				ArrayList<Cancion> canciones_incluido_explicitas = new ArrayList<Cancion>();
+				for(Cancion cancion: sistema.canciones_totales) {
+					if((cancion.getEstado() == EstadoCancion.Explicita || cancion.getEstado() == EstadoCancion.Valida) && cancion.getTitulo().equals(palabra) == true) {
+						canciones_incluido_explicitas.add(cancion);
+					}
+				}
+				
+				return canciones_incluido_explicitas;
 			}
 		}
-		return lista_filtrada;
+		
+		ArrayList<Cancion> canciones_no_registrado = new ArrayList<Cancion>();
+		for(Cancion cancion: sistema.canciones_totales) {
+			if(cancion.getEstado() == EstadoCancion.Valida && cancion.getTitulo().equals(palabra) == true) {
+				canciones_no_registrado.add(cancion);
+			}
+		}
+		
+		return canciones_no_registrado;
+		
+		
+		
 	}
 	
 	@SuppressWarnings("unlikely-arg-type")
 	public ArrayList<Album> buscadorPorAlbumes(String palabra){
-	
+		LocalDate fecha_actual = LocalDate.now();
+		ArrayList<Album> albumes_incluidas_explicitas = new ArrayList<Album>();
+		
 		if(palabra == null) {
 			return null;
 		}
-			
-		ArrayList<Album> lista_filtrada = new ArrayList<Album>();
-		for(Album album: sistema.albumes_totales) {
-			if(album.getTitulo().contains(palabra) == true || album.getTitulo().equals(palabra) == true) {
-				lista_filtrada.add(album);
+		
+		if(sistema.usuario_actual != null) {
+			Period intervalo = Period.between(sistema.usuario_actual.getFechaNacimiento(), fecha_actual);
+			if(intervalo.getYears() >= 18) {
+				
+				for(Album album_totales:sistema.albumes_totales) {
+					if(album_totales.getTitulo().equals(palabra) == true) {
+						Album album_filtrado = new Album(album_totales.getAnyo(),album_totales.getTitulo(),album_totales.getAutor(),null);
+						for(Cancion canciones_album: album_totales.getContenido()) {
+							if(canciones_album.getEstado() == EstadoCancion.Explicita || canciones_album.getEstado() == EstadoCancion.Valida) {
+								album_filtrado.anyadirContenido(canciones_album);
+							}
+						}
+						albumes_incluidas_explicitas.add(album_filtrado);
+					}
+				}
+				return albumes_incluidas_explicitas;
 			}
 		}
-		return lista_filtrada;
+		
+		for(Album album_totales:sistema.albumes_totales) {
+			if(album_totales.getTitulo().equals(palabra) == true) {
+				Album album_filtrado = new Album(album_totales.getAnyo(),album_totales.getTitulo(),album_totales.getAutor(),null);
+				for(Cancion canciones_album: album_totales.getContenido()) {
+					if(canciones_album.getEstado() == EstadoCancion.Valida) {
+						album_filtrado.anyadirContenido(canciones_album);
+					}
+				}
+				albumes_incluidas_explicitas.add(album_filtrado);
+			}
+		}
+		return albumes_incluidas_explicitas;
+		
 	}
 	
 	public ArrayList<Cancion> buscadorPorAutores_DevolvemosCanciones(String palabra){
 		
 		int ide = 0;
 		ArrayList<Cancion> lista_autor_canciones = new ArrayList<Cancion>();
+		LocalDate fecha_actual = LocalDate.now();
 		
 		if(palabra == null) {
 			return null;
@@ -253,19 +306,33 @@ public class Sistema implements java.io.Serializable{
 			return null;
 		}
 		
-		for(Cancion cancion: sistema.canciones_totales) {
-			if(cancion.getAutor().getId() == ide) {
-				lista_autor_canciones.add(cancion);
+		if(sistema.usuario_actual != null) {
+			Period intervalo = Period.between(sistema.usuario_actual.getFechaNacimiento(), fecha_actual);
+			
+			if(intervalo.getYears() >= 18) {
+				for(Cancion cancion: sistema.canciones_totales) {
+					if((cancion.getEstado() == EstadoCancion.Explicita || cancion.getEstado() == EstadoCancion.Valida) && cancion.getAutor().getId() == ide) {
+						lista_autor_canciones.add(cancion);
+					}
+				}
+				return lista_autor_canciones;
 			}
 		}
 		
+		for(Cancion cancion: sistema.canciones_totales) {
+			if(cancion.getEstado() == EstadoCancion.Valida && cancion.getAutor().getId() == ide) {
+				lista_autor_canciones.add(cancion);
+			}
+		}
 		return lista_autor_canciones;
+		
 	}
 	
 	public ArrayList<Album> buscadorPorAutores_DevolvemosAlbumes(String palabra){
 		
 		int ide = 0;
-		ArrayList<Album> lista_autor_albumes = new ArrayList<Album>();
+		ArrayList<Album> albumes_incluidas_explicitas = new ArrayList<Album>();
+		LocalDate fecha_actual = LocalDate.now();
 		
 		if(palabra == null) {
 			return null;
@@ -282,13 +349,38 @@ public class Sistema implements java.io.Serializable{
 			return null;
 		}
 		
-		for(Album album: sistema.albumes_totales) {
-			if(album.getAutor().getId() == ide) {
-				lista_autor_albumes.add(album);
+		if(sistema.usuario_actual != null) {
+			Period intervalo = Period.between(sistema.usuario_actual.getFechaNacimiento(), fecha_actual);
+			
+			if(intervalo.getYears() >= 18) {
+				for(Album album_totales:sistema.albumes_totales) {
+					if(album_totales.getAutor().getId() == ide) {
+						Album album_filtrado = new Album(album_totales.getAnyo(),album_totales.getTitulo(),album_totales.getAutor(),null);
+						for(Cancion canciones_album: album_totales.getContenido()) {
+							if(canciones_album.getEstado() == EstadoCancion.Explicita || canciones_album.getEstado() == EstadoCancion.Valida) {
+								album_filtrado.anyadirContenido(canciones_album);
+							}
+						}
+						albumes_incluidas_explicitas.add(album_filtrado);
+					}
+				}
+				return albumes_incluidas_explicitas;
 			}
 		}
 		
-		return lista_autor_albumes;
+		for(Album album_totales:sistema.albumes_totales) {
+			if(album_totales.getAutor().getId() == ide) {
+				Album album_filtrado = new Album(album_totales.getAnyo(),album_totales.getTitulo(),album_totales.getAutor(),null);
+				for(Cancion canciones_album: album_totales.getContenido()) {
+					if(canciones_album.getEstado() == EstadoCancion.Valida) {
+						album_filtrado.anyadirContenido(canciones_album);
+					}
+				}
+				albumes_incluidas_explicitas.add(album_filtrado);
+			}
+		}
+		return albumes_incluidas_explicitas;
+		
 	}
 	
 	public ArrayList<Contenido> buscador_general(String palabra,int criterio) {
@@ -327,33 +419,35 @@ public class Sistema implements java.io.Serializable{
 		return retorno;
 	}
 	
-	//---------------------CONTENIDO------------------------------------
-
-	//**SUBIR_CANCION
 	public Status crearCancion(Date anyo,String titulo,String nombreMP3) throws FileNotFoundException, Mp3PlayerException{
+		
 		boolean cancion_repetida_en_usuario = false; 
 		
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
+			
 			Cancion c = new Cancion(anyo,titulo,sistema.usuario_actual,nombreMP3);
+			
 			for(Cancion cancion:sistema.usuario_actual.getCanciones()) {
 				if(cancion.getTitulo().equals(titulo) == true && cancion.getNombreMP3().equals(nombreMP3) == true) {
 					cancion_repetida_en_usuario = true;
 				}
 			}
+			
 			if(cancion_repetida_en_usuario == true) {
 				return Status.ERROR;
 			}else {
-				sistema.usuario_actual.aniadirCancionPersonal(c);
+				sistema.usuario_actual.anyadirACancionPersonal(c);
+				sistema.canciones_totales.add(c);
 				return Status.OK;
 			}
+			
 		}else {
 			return Status.ERROR;
 		}
 		
 	}
 	
-	//**BORRAR_CANCION UN USUARIO BORRA LAS SUYAS CLARO ESTA
-	public void eliminarCancion(Cancion cancion_eliminar) {
+	public Status eliminarCancion(Cancion cancion_eliminar) {
 		boolean existe_cancion_en_usuario = false;
 		
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
@@ -364,19 +458,22 @@ public class Sistema implements java.io.Serializable{
 			}
 			if(existe_cancion_en_usuario == true) { //SE PUEDE ELIMINAR DEL ARRAY DE CANCIONES PERSONALES
 				sistema.usuario_actual.eliminarDeCancionesPersonales(cancion_eliminar);
-				return;
+				sistema.canciones_totales.remove(cancion_eliminar);
+				return Status.OK;
+			}else {
+				return Status.ERROR;
 			}
 		}else {
-			return;
+			return Status.ERROR;
 		}
+		
 	}
 	
-	//**CREAR_ALBUM
 	public Status crearAlbum(Date anyo,String titulo,int id,ArrayList<Cancion> contenido) {
 		boolean album_repetido_en_usuario = false; 
 		
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
-			Album a = new Album(anyo,titulo,0,sistema.usuario_actual,new ArrayList<Cancion>());
+			Album a = new Album(anyo,titulo,sistema.usuario_actual,new ArrayList<Cancion>());
 			for(Album album:sistema.usuario_actual.getAlbumes()) {
 				if(album.getTitulo().equals(titulo)== true) {
 					album_repetido_en_usuario = true;
@@ -386,7 +483,7 @@ public class Sistema implements java.io.Serializable{
 			if(album_repetido_en_usuario  == true) {
 				return Status.ERROR;
 			}else {
-				sistema.usuario_actual.aniadirAlbumPersonal(a);
+				sistema.usuario_actual.anyadirAAlbumPersonal(a);
 				sistema.albumes_totales.add(a);
 				return Status.OK;
 			}
@@ -396,8 +493,7 @@ public class Sistema implements java.io.Serializable{
 	
 	}
 	
-	//**BORRAR_ALBUM
-	public void eliminarAlbum(Album album_eliminar) {
+	public Status eliminarAlbum(Album album_eliminar) {
 		boolean existe_album_en_usuario = false;
 		
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
@@ -409,41 +505,40 @@ public class Sistema implements java.io.Serializable{
 			
 			if(existe_album_en_usuario == true) { //SE PUEDE ELIMINAR DEL ARRAY DE CANCIONES PERSONALES
 				sistema.usuario_actual.eliminarDeAlbumesPersonales(album_eliminar);
-				return;
+				sistema.albumes_totales.remove(album_eliminar);
+				return Status.OK;
 			}else {
-				return;
+				return Status.ERROR;
 			}
 		}else {
-			return;
+			return Status.ERROR;
 		}
 	}
 	
 	//**ANIADIR_A_ALBUM
 	public Status aniadirAAlbum(Album a, Cancion c) {
-		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
-			if(c.getEstado() == EstadoCancion.Valida || c.getEstado() == EstadoCancion.Explicita) {
-			if(sistema.usuario_actual.getCanciones().contains(c) == true) {
-				if(sistema.usuario_actual.getAlbumes().contains(a) == true) {
-					ArrayList<Cancion> canciones_en_albumes = a.getContenido();
-					if(canciones_en_albumes.contains(c) != true) { //NO ESTA EN EL ALBUM Y SE PROCEDE A AÑADIR
-						a.anyadirContenido(c);
-						/*if(sistema.albumes_totales.contains(a) != true) {
-							sistema.albumes_totales.add(a);
-						}*/
-						return Status.OK;
 		
-					}else {
-						return Status.ERROR;
+		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
+				if(sistema.usuario_actual.getCanciones().contains(c) == true) {
+					if(sistema.usuario_actual.getAlbumes().contains(a) == true) {
+						
+						ArrayList<Cancion> canciones_en_albumes = a.getContenido();
+						if(canciones_en_albumes.contains(c) != true) { //NO ESTA EN EL ALBUM Y SE PROCEDE A AÑADIR
+							a.anyadirContenido(c);
+							/*if(sistema.albumes_totales.contains(a) != true) {
+								sistema.albumes_totales.add(a);
+							}*/
+							return Status.OK;
+			
+						}
 					}
-				}else {
-					return Status.ERROR;
 				}
-			}else {
-				return Status.ERROR;
-			}
-			}else {
-				return Status.ERROR;
-			}
+				
+				if(sistema.) {
+					
+				}
+				
+			
 		}else {
 			return Status.ERROR;
 		}
@@ -476,7 +571,6 @@ public class Sistema implements java.io.Serializable{
 		}
 	}
 	
-	//**CREAR_LISTA
 	public Status crearLista(Date anyo, String titulo,int id, Usuario autor, ArrayList<Contenido> contenido) {
 		
 		boolean lista_repetida_en_usuario = false; 
@@ -492,7 +586,7 @@ public class Sistema implements java.io.Serializable{
 			if(lista_repetida_en_usuario == true) {
 				return Status.ERROR;
 			}else {
-				sistema.usuario_actual.aniadirListaPersonal(l);
+				sistema.usuario_actual.anyadirAListaPersonal(l);
 				return Status.OK;
 			}
 		}else {
@@ -500,8 +594,7 @@ public class Sistema implements java.io.Serializable{
 		}
 	}
 	
-	//**BORAR_LISTA
-	public void eliminarLista(Lista lista_eliminar) {
+	public Status eliminarLista(Lista lista_eliminar) {
 		boolean existe_lista_en_usuario = false;
 		
 		if(sistema.usuario_actual.getPremium() == true || sistema.usuario_actual != null) {
@@ -513,10 +606,12 @@ public class Sistema implements java.io.Serializable{
 			
 			if(existe_lista_en_usuario == true) { //SE PUEDE ELIMINAR DEL ARRAY DE CANCIONES PERSONALES
 				sistema.usuario_actual.eliminarDeListasPersonales(lista_eliminar);
-				return;
+				return Status.OK;
+			}else {
+				return Status.ERROR;
 			}
 		}else {
-			return;
+			return Status.ERROR;
 		}
 	}
 	
@@ -531,7 +626,6 @@ public class Sistema implements java.io.Serializable{
 	
 	//---------------------ADMINISTRADOR------------------------------------
 	
-	//**EMPEORAR_CUENTA
 	public void empeorarCuentaPrincipal() {
 
 		LocalDate fecha_actual= LocalDate.now();
@@ -557,12 +651,11 @@ public class Sistema implements java.io.Serializable{
 		
 	}
 	
-	//**DESBLOQUEAR USUARIO TERMINADO
 	public boolean desbloquearUsuario() {
 		LocalDate fecha_actual = LocalDate.now();
 		for(Usuario usuario: this.sistema.usuarios_totales) {
 			LocalDate fecha_inicio_bloqueado = usuario.getFechaInicioBloqueado();
-			if(fecha_actual.minusDays(30).equals(fecha_inicio_bloqueado) == true && usuario.getEstadoBloqueado() == enumeracionBloqueado.INDEFINIDO.TEMPORAL) {
+			if(fecha_actual.minusDays(30).equals(fecha_inicio_bloqueado) == true && usuario.getEstadoBloqueado() == enumeracionBloqueado.TEMPORAL) {
 				usuario.desbloquearCuenta();
 			}
 		}
@@ -570,7 +663,6 @@ public class Sistema implements java.io.Serializable{
 		return true;
 	}
 	
-	//**GUARDAR DATOS GENERALES TERMINADO
 	public boolean guardarDatosGenerales() {
 		try {
 			FileOutputStream fileOut=new FileOutputStream("datos.temp");
@@ -591,7 +683,6 @@ public class Sistema implements java.io.Serializable{
 			FileInputStream in = new FileInputStream("datos.temp");
 			ObjectInputStream oin = new ObjectInputStream(in);
 			Sistema sistema_retornado = (Sistema) oin.readObject();
-			Sistema.sistema.administrador = sistema_retornado.administrador;
 			Sistema.sistema.usuario_actual = sistema_retornado.usuario_actual;
 			Sistema.sistema.usuarios_totales = sistema_retornado.usuarios_totales;
 			Sistema.sistema.precio_premium = sistema_retornado.precio_premium;
@@ -610,9 +701,29 @@ public class Sistema implements java.io.Serializable{
 	}
 	
 	
+	//**AÑADIR COMENTARIOS A CANCION Y A ALBUM
+	public Status aniadirComentarioCancion(Comentario comentario, Cancion cancion) {
+		if(comentario == null || cancion == null) {
+			return Status.ERROR;
+		}else {
+			return cancion.anyadirComentario(comentario);
+		}
+	}
+	
+	public Status aniadirComentarioAlbum(Comentario comentario, Album album) {
+		if(comentario == null  || album == null) {
+			return Status.ERROR;
+		}else {
+			return album.anyadirComentario(comentario);
+		}
+	}
+
 	
 	//**----------REPRODUCCIONES__CONCRETAS----------------
-	
+	/**
+	 * 
+	 * @param c
+	 */
 	public void reproducirCancion(Cancion c) {
 		c.reproducir();
 		Usuario autor = c.getAutor();
@@ -674,6 +785,9 @@ public class Sistema implements java.io.Serializable{
 	
 	public static void main(String args[]) throws FileNotFoundException, Mp3PlayerException, InterruptedException {
 		Date d = new Date();
+		
+		
+		
 		
 		Cancion c = new Cancion(d,"pajaritos",null,"chicle3.mp3");
 		c.aniadirCola();
