@@ -1,6 +1,3 @@
-
-	
-	
 	package com.ESPOTIPHAI_MIUSIC.sistema.contenido;
 
 	import java.io.FileNotFoundException;
@@ -46,7 +43,7 @@
 		 *	Funcion para anyadir a la cola de reproduccion
 		 *	@param cancion_a_anyadir  string de la cancion a anyadir
 		 */
-		public void aniadirCola() {
+		public void anyadirCola() {
 			try {
 				this.repro_mp3.add(this.nombreMP3);
 				return;

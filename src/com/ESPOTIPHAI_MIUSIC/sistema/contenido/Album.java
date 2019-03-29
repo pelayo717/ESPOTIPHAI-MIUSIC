@@ -40,10 +40,14 @@ public class Album extends ContenidoComentable {
 	 * 	@return  OK si no hay errores y ERROR de lo contrario
 	 */
 	public Status anyadirContenido(Cancion contenido) {
-		if (this.contenido.add(contenido)) {
-			return Status.OK;
-		} else {
+		if(this.contenido.contains(contenido)) {
 			return Status.ERROR;
+		} else {
+			if (this.contenido.add(contenido)) {
+				return Status.OK;
+			} else {
+				return Status.ERROR;
+			}
 		}
 	}
 	

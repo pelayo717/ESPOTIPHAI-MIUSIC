@@ -9,9 +9,9 @@ import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
  */
 public class Lista extends Contenido{
 	
-	private ArrayList<Contenido> contenidos = new ArrayList<Contenido>();
+	private ArrayList<Cancion> contenidos = new ArrayList<Cancion>();
 	
-	public Lista(Date anyo, String titulo,Usuario autor, ArrayList<Contenido> contenido) {
+	public Lista(Date anyo, String titulo,Usuario autor, ArrayList<Cancion> contenido) {
 		super(anyo, titulo,autor);
 		this.setContenido(contenido);
 		this.setDuracion(this.calcularTiempo());
@@ -39,11 +39,36 @@ public class Lista extends Contenido{
 	 * 	@return  OK si no hay errores y ERROR de lo contrario
 	 */
 	public Status anyadirContenido(Contenido contenido) {
-		if (this.contenido.add(contenido)) {
+		if (contenido instanceof Cancion) {
+			if(this.contenidos.contains(contenido)) {
+				return Status.ERROR;
+			} else {
+				if (this.contenidos.add((Cancion) contenido)) {
+					return Status.OK;
+				} else {
+					return Status.ERROR;
+				}
+			}
+		} else if (contenido instanceof Lista) {
+			ArrayList<Cancion> canciones = ((Lista)contenido).getContenido();
+			for(Cancion cancion: canciones) {
+				if (this.anyadirContenido(cancion) == Status.ERROR){
+					return Status.ERROR;
+				}
+			}	
+			return Status.OK;
+		} else if (contenido instanceof Album) {
+			ArrayList<Cancion> canciones = ((Album)contenido).getContenido();
+			for(Cancion cancion: canciones) {
+				if (this.anyadirContenido(cancion) == Status.ERROR){
+					return Status.ERROR;
+				}
+			}
 			return Status.OK;
 		} else {
 			return Status.ERROR;
 		}
+		
 	}
 	
 	/**
@@ -51,8 +76,8 @@ public class Lista extends Contenido{
 	 * 	@return  OK si no hay errores y ERROR de lo contrario
 	 */
 	public Status eliminarContenido(Contenido contenido) {
-		if(this.contenido.contains(contenido)) {
-			if(this.contenido.remove(contenido)) {
+		if(this.contenidos.contains(contenido)) {
+			if(this.contenidos.remove(contenido)) {
 				return Status.OK;
 			} else {
 				return Status.ERROR;
@@ -73,11 +98,11 @@ public class Lista extends Contenido{
 	 *	Setter de contenido de la lista
 	 * 	@param  contenido ArrayList del contenido de la lista
 	 */
-	public void setContenido(ArrayList<Contenido> contenido) {
+	public void setContenido(ArrayList<Cancion> contenido) {
 		if (contenido == null) {
-			this.contenido = new ArrayList<Contenido>();
+			this.contenidos = new ArrayList<Cancion>();
 		} else {
-			this.contenido = contenido;
+			this.contenidos = contenido;
 		}
 	}
 	
@@ -86,8 +111,8 @@ public class Lista extends Contenido{
 	 *	Getter de contenido de la lista
 	 * 	@return  un ArrayList del contenido de la lista
 	 */
-	public ArrayList<Contenido> getContenido() {
-		return contenido;
+	public ArrayList<Cancion> getContenido() {
+		return contenidos;
 	}
 	
 
