@@ -1,12 +1,25 @@
 package com.ESPOTIPHAI_MIUSIC.sistema.notificacion;
 
+
 import com.ESPOTIPHAI_MIUSIC.sistema.usuario.Usuario;
 
+
+/**
+ *	Clase Notificacion
+ */
 public class Notificacion {
 	private Usuario receptor;
 	private String mensaje; 
 	private Usuario emisor;
 	private TipoNotificacion tipo;
+	
+	
+	public Notificacion(Usuario receptor, String mensaje, Usuario emisor, TipoNotificacion tipo) {
+		this.setEmisor(emisor);
+		this.setMensaje(mensaje);
+		this.setReceptor(receptor);
+		this.setTipoNotificacion(tipo);
+	}
 	
 	
 	
@@ -34,7 +47,7 @@ public class Notificacion {
 	 * Getter de mensaje
 	 * @return mensaje de la notificacion
 	 */
-	public String getmensaje() {
+	public String getMensaje() {
 		return mensaje;
 	}
 
@@ -42,7 +55,7 @@ public class Notificacion {
 	 * Setter de mensaje
 	 * @param mensaje mensaje de la notificacion
 	 */
-	public void setEstado(String mensaje) {
+	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
 	}
 	
