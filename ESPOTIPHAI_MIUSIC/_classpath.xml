@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_162"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/pelayo/Desktop/TeleChargeAndPaySystem8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pelayo/Desktop/Mp3Java/jl1.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pelayo/Desktop/Mp3Java/MP3Player.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
